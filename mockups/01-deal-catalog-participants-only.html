@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meken Invest — витрина сделок</title>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14212B; --muted:#5D6B76; --line:#DDE3E6; --paper:#FFFFFF; --bg:#F3F5F4;
+    --teal:#0F6E63; --teal-soft:#E3F1EE; --sand:#C79A4B; --sand-soft:#F7EEDD; --rose-soft:#F9E7E3; --rose:#B5473A;
+    --r:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Onest",system-ui,sans-serif;color:var(--ink);background:var(--bg);font-size:15px;line-height:1.5}
+  a{color:inherit;text-decoration:none}
+  header{background:var(--paper);border-bottom:1px solid var(--line)}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  nav{display:flex;align-items:center;height:64px;gap:32px}
+  .logo{font-weight:700;font-size:18px;letter-spacing:-.01em}
+  .logo span{color:var(--teal)}
+  nav .links{display:flex;gap:24px;color:var(--muted);font-size:14px}
+  nav .links a.on{color:var(--ink);font-weight:600}
+  nav .right{margin-left:auto;display:flex;gap:12px;align-items:center;font-size:14px}
+  .btn{display:inline-block;padding:10px 16px;border-radius:8px;font-weight:600;font-size:14px;border:1px solid var(--line);background:var(--paper);cursor:pointer}
+  .btn.primary{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .btn.ghost{background:transparent}
+
+  .strip{background:var(--ink);color:#fff;font-size:13px}
+  .strip .wrap{display:flex;gap:28px;height:40px;align-items:center}
+  .strip b{color:#9ED4CA;font-weight:600}
+
+  .hero{padding:44px 0 28px}
+  .hero h1{font-size:40px;line-height:1.1;letter-spacing:-.02em;font-weight:700;max-width:760px}
+  .hero p{margin-top:14px;color:var(--muted);max-width:640px;font-size:16px}
+
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin:26px 0 18px}
+  .chip{padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--paper);font-size:13px;color:var(--muted);cursor:pointer}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chip.sel{border-color:var(--teal);color:var(--teal);background:var(--teal-soft)}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:56px}
+  .deal{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
+  .deal .top{padding:16px 18px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .tag{font-size:12px;padding:4px 9px;border-radius:6px;font-weight:600}
+  .tag.season{background:var(--sand-soft);color:#8A6420}
+  .tag.evergreen{background:var(--teal-soft);color:var(--teal)}
+  .tag.closing{background:var(--rose-soft);color:var(--rose)}
+  .instr{font-size:12px;color:var(--muted)}
+  .deal h3{font-size:18px;font-weight:600;padding:10px 18px 4px;letter-spacing:-.01em}
+  .deal .where{padding:0 18px;color:var(--muted);font-size:13px}
+  .kpi{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;padding:16px 18px}
+  .kpi div small{display:block;color:var(--muted);font-size:12px}
+  .kpi div b{font-size:17px;font-weight:600}
+  .kpi .big b{font-size:24px;color:var(--teal)}
+  .bar{margin:0 18px;height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--teal)}
+  .bar.sand i{background:var(--sand)}
+  .fill{display:flex;justify-content:space-between;padding:8px 18px 0;font-size:12px;color:var(--muted)}
+  .deal .foot{margin-top:auto;padding:16px 18px;display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);margin-top:16px}
+  .deal .foot .note{font-size:12px;color:var(--muted);margin-left:auto;text-align:right}
+
+  .how{background:var(--paper);border-top:1px solid var(--line);padding:56px 0}
+  .how h2{font-size:28px;letter-spacing:-.02em;margin-bottom:8px}
+  .how .lead{color:var(--muted);max-width:640px;margin-bottom:32px}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  .step{border-left:2px solid var(--teal);padding-left:16px}
+  .step b{display:block;margin-bottom:6px;font-size:15px}
+  .step p{font-size:14px;color:var(--muted)}
+
+  .instruments{padding:56px 0}
+  .instruments h2{font-size:28px;letter-spacing:-.02em;margin-bottom:24px}
+  table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;font-size:14px}
+  th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-weight:600;color:var(--muted);font-size:13px;background:#FAFBFB}
+  tr:last-child td{border-bottom:0}
+  td b{font-weight:600}
+
+  footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:12px;line-height:1.6}
+  @media (max-width:900px){.grid{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}.hero h1{font-size:30px}}
+  @media (max-width:600px){.grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}nav .links{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap"><nav>
+    <div class="logo">Meken <span>Invest</span></div>
+    <div class="links"><a class="on" href="#">Сделки</a><a href="#">Как это работает</a><a href="#">Инструменты</a><a href="#">Отчётность</a><a href="#">Шариатский совет</a></div>
+    <div class="right"><a href="#">RU / EN</a><a class="btn ghost" href="#">Войти</a><a class="btn primary" href="#">Стать инвестором</a></div>
+  </nav></div>
+</header>
+<div class="strip"><div class="wrap">
+  <span>Активных сделок <b>6</b></span><span>Привлечено в 2026 <b>$1.42M</b></span><span>Закрыто сделок <b>11</b></span><span>Средний срок <b>9 мес</b></span><span>Возвращено инвесторам <b>$860K</b></span>
+</div></div>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Сделки в Бишкеке с землёй, стройкой и материалами. Вы выбираете, куда заходите.</h1>
+    <p>Каждая сделка — отдельный договор партнёрства по исламским принципам: доход не гарантирован, прибыль и убыток делятся по заранее оговорённой пропорции. Целевая доходность рассчитана нами и раскрыта до входа.</p>
+  </section>
+
+  <div class="filters">
+    <span class="chip on">Все</span><span class="chip">Земля</span><span class="chip">Стройка с котлована</span><span class="chip">Материалы</span><span class="chip">Квартиры</span><span class="chip">Аренда</span><span class="chip">Рассрочка Planalytic</span>
+    <span style="flex:1"></span>
+    <span class="chip sel">Сезонные</span><span class="chip">Срок до 6 мес</span><span class="chip">Чек от $2 000</span>
+  </div>
+
+  <section class="grid">
+    <article class="deal">
+      <div class="top"><span class="tag season">Сезонная · до 30 сентября</span><span class="instr">Мурабаха</span></div>
+      <h3>Арматура А500С, партия 320 т</h3>
+      <div class="where">Покупка на складе поставщика в межсезонье, продажа застройщикам в марте–апреле</div>
+      <div class="kpi">
+        <div class="big"><small>Целевая маржа сделки</small><b>12–15%</b></div>
+        <div><small>Срок</small><b>5–6 мес</b></div>
+        <div><small>Минимальный чек</small><b>$2 000</b></div>
+        <div><small>Доля инвесторов в прибыли</small><b>70%</b></div>
+      </div>
+      <div class="bar sand"><i style="width:78%"></i></div>
+      <div class="fill"><span>Собрано $187 000 из $240 000</span><span>78%</span></div>
+      <div class="foot"><a class="btn primary" href="#">Участвовать</a><span class="note">34 инвестора<br>3 недели до закрытия</span></div>
+    </article>
+
+    <article class="deal">
+      <div class="top"><span class="tag evergreen">Несезонная</span><span class="instr">Мушарака</span></div>
+      <h3>Участок 8 соток, Ала-Арча</h3>
+      <div class="where">Покупка до утверждения генплана района, продажа после подведения коммуникаций</div>
+      <div class="kpi">
+        <div class="big"><small>Целевая маржа сделки</small><b>28–35%</b></div>
+        <div><small>Срок</small><b>14–18 мес</b></div>
+        <div><small>Минимальный чек</small><b>$5 000</b></div>
+        <div><small>Доля инвесторов в прибыли</small><b>75%</b></div>
+      </div>
+      <div class="bar"><i style="width:41%"></i></div>
+      <div class="fill"><span>Собрано $49 000 из $120 000</span><span>41%</span></div>
+      <div class="foot"><a class="btn primary" href="#">Участвовать</a><span class="note">11 инвесторов<br>объект осмотрен 21 авг</span></div>
+    </article>
+
+    <article class="deal">
+      <div class="top"><span class="tag closing">Закрывается · 4 дня</span><span class="instr">Истисна + мушарака</span></div>
+      <h3>Дом 180 м², Кок-Жар, с котлована</h3>
+      <div class="where">Вход на стадии фундамента, выход по завершении чистовой отделки или раньше по предпродаже</div>
+      <div class="kpi">
+        <div class="big"><small>Целевая маржа сделки</small><b>30–38%</b></div>
+        <div><small>Срок</small><b>11–13 мес</b></div>
+        <div><small>Минимальный чек</small><b>$10 000</b></div>
+        <div><small>Доля инвесторов в прибыли</small><b>70%</b></div>
+      </div>
+      <div class="bar"><i style="width:93%"></i></div>
+      <div class="fill"><span>Собрано $158 000 из $170 000</span><span>93%</span></div>
+      <div class="foot"><a class="btn primary" href="#">Участвовать</a><span class="note">19 инвесторов<br>смета проверена</span></div>
+    </article>
+
+    <article class="deal">
+      <div class="top"><span class="tag evergreen">Револьверная</span><span class="instr">Мурабаха</span></div>
+      <h3>Рассрочка стройматериалов через Planalytic</h3>
+      <div class="where">Пул финансирует закупку материалов для подрядчиков, продажа в рассрочку с раскрытой наценкой 10%</div>
+      <div class="kpi">
+        <div class="big"><small>Целевая доходность пула</small><b>14–18% годовых</b></div>
+        <div><small>Цикл</small><b>6 мес, оборачиваемость ×2</b></div>
+        <div><small>Минимальный чек</small><b>$3 000</b></div>
+        <div><small>Доля инвесторов в наценке</small><b>70%</b></div>
+      </div>
+      <div class="bar"><i style="width:56%"></i></div>
+      <div class="fill"><span>Собрано $112 000 из $200 000</span><span>56%</span></div>
+      <div class="foot"><a class="btn primary" href="#">Участвовать</a><span class="note">Оценка подрядчиков по данным Planalytic</span></div>
+    </article>
+
+    <article class="deal">
+      <div class="top"><span class="tag evergreen">Несезонная</span><span class="instr">Мушарака</span></div>
+      <h3>2-комн. квартира ниже рынка, Джал</h3>
+      <div class="where">Покупка у срочного продавца, косметический ремонт, продажа за 4–5 месяцев</div>
+      <div class="kpi">
+        <div class="big"><small>Целевая маржа сделки</small><b>15–20%</b></div>
+        <div><small>Срок</small><b>4–5 мес</b></div>
+        <div><small>Минимальный чек</small><b>$2 500</b></div>
+        <div><small>Доля инвесторов в прибыли</small><b>75%</b></div>
+      </div>
+      <div class="bar"><i style="width:22%"></i></div>
+      <div class="fill"><span>Собрано $14 000 из $65 000</span><span>22%</span></div>
+      <div class="foot"><a class="btn primary" href="#">Участвовать</a><span class="note">Опубликована сегодня</span></div>
+    </article>
+
+    <article class="deal">
+      <div class="top"><span class="tag evergreen">Долгосрочная</span><span class="instr">Иджара</span></div>
+      <h3>Коммерческое помещение 140 м², Токтогула</h3>
+      <div class="where">Покупка в совместную собственность, сдача в аренду сетевому арендатору, распределение ренты ежеквартально</div>
+      <div class="kpi">
+        <div class="big"><small>Целевая рентная доходность</small><b>11–13% годовых</b></div>
+        <div><small>Срок</small><b>от 24 мес</b></div>
+        <div><small>Минимальный чек</small><b>$5 000</b></div>
+        <div><small>Доля инвесторов в ренте</small><b>85%</b></div>
+      </div>
+      <div class="bar"><i style="width:64%"></i></div>
+      <div class="fill"><span>Собрано $205 000 из $320 000</span><span>64%</span></div>
+      <div class="foot"><a class="btn primary" href="#">Участвовать</a><span class="note">Договор аренды подписан на 3 года</span></div>
+    </article>
+  </section>
+</main>
+
+<section class="how"><div class="wrap">
+  <h2>Как проходит одна сделка</h2>
+  <p class="lead">Сделка живёт по одному сценарию от публикации до распределения прибыли. Деньги не смешиваются между сделками.</p>
+  <div class="steps">
+    <div class="step"><b>1. Публикация</b><p>Мы находим объект, считаем модель, показываем смету, документы и целевую маржу. Шариатский консультант подтверждает структуру.</p></div>
+    <div class="step"><b>2. Сбор</b><p>Инвесторы вносят чек на выделенный счёт сделки. Если сумма не собрана к дедлайну — деньги возвращаются полностью.</p></div>
+    <div class="step"><b>3. Исполнение</b><p>Покупка, стройка или закупка. Раз в месяц отчёт с фото, платёжками и ходом работ в личном кабинете.</p></div>
+    <div class="step"><b>4. Выход</b><p>Продажа или получение ренты. Прибыль делится по договору, убыток — пропорционально долям. Наша доля только из прибыли.</p></div>
+  </div>
+</div></section>
+
+<section class="instruments"><div class="wrap">
+  <h2>Инструменты, которые используем</h2>
+  <table>
+    <tr><th>Инструмент</th><th>Где применяем</th><th>Как делится результат</th><th>Что получает инвестор</th></tr>
+    <tr><td><b>Мушарака</b><br><span style="color:var(--muted);font-size:13px">совместное владение</span></td><td>Земля, квартиры, дома с котлована</td><td>Прибыль по оговорённой доле, убыток по вложенному капиталу</td><td>Долю в объекте до продажи</td></tr>
+    <tr><td><b>Мурабаха</b><br><span style="color:var(--muted);font-size:13px">купля-продажа с раскрытой наценкой</span></td><td>Арматура, стройматериалы, рассрочка Planalytic</td><td>Наценка известна заранее, инвесторы получают долю в ней</td><td>Долю в товаре и в наценке</td></tr>
+    <tr><td><b>Иджара</b><br><span style="color:var(--muted);font-size:13px">аренда</span></td><td>Коммерческие помещения</td><td>Рента делится по долям владения</td><td>Ежеквартальные выплаты</td></tr>
+    <tr><td><b>Истисна</b><br><span style="color:var(--muted);font-size:13px">заказ на строительство</span></td><td>Дома и малоэтажка</td><td>Оплата этапами по ходу стройки, результат делится как в мушараке</td><td>Готовый объект на продажу</td></tr>
+  </table>
+</div></section>
+
+<footer><div class="wrap">
+  Meken Invest — рабочее название. Показатели «целевая маржа» — расчёт управляющей компании по текущим ценам рынка Бишкека и не являются гарантией дохода. Все сделки структурированы без ссудного процента; распределение прибыли и убытка регулируется договором конкретной сделки. Сделки доступны квалифицированным инвесторам в соответствии с законодательством страны проживания.
+</div></footer>
+</body>
+</html>

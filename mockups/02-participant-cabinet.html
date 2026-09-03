@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meken Invest — кабинет инвестора</title>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#101815; --panel:#172420; --panel2:#1E2E29; --line:#2A3B35;
+    --text:#E9EFEC; --muted:#8FA39B; --mint:#6FD3B0; --amber:#E4B45A; --coral:#E77A6A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Golos Text",system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+  a{color:inherit;text-decoration:none}
+  .app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+  aside{background:var(--panel);border-right:1px solid var(--line);padding:22px 18px;display:flex;flex-direction:column}
+  .logo{font-weight:700;font-size:17px;margin-bottom:28px}
+  .logo span{color:var(--mint)}
+  aside a{display:block;padding:10px 12px;border-radius:8px;color:var(--muted);margin-bottom:2px}
+  aside a.on{background:var(--panel2);color:var(--text)}
+  aside .user{margin-top:auto;padding:12px;border-top:1px solid var(--line);font-size:13px}
+  aside .user small{display:block;color:var(--muted)}
+  main{padding:26px 32px 48px;max-width:1180px}
+  .head{display:flex;align-items:baseline;gap:16px;margin-bottom:22px}
+  .head h1{font-size:24px;font-weight:600;letter-spacing:-.01em}
+  .head .date{color:var(--muted)}
+  .head .cur{margin-left:auto;display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px}
+  .head .cur span{padding:5px 12px;border-radius:6px;color:var(--muted)}
+  .head .cur span.on{background:var(--panel2);color:var(--text)}
+
+  .summary{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:14px;margin-bottom:22px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  .card small{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
+  .card .v{font-size:28px;font-weight:600;letter-spacing:-.02em}
+  .card .v.mint{color:var(--mint)}
+  .card .sub{color:var(--muted);font-size:12px;margin-top:4px}
+  .card.main .v{font-size:36px}
+  .alloc{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:14px 0 8px}
+  .alloc i{display:block;height:100%}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+  .legend b{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+  .two{display:grid;grid-template-columns:1.55fr 1fr;gap:14px}
+  h2{font-size:15px;font-weight:600;margin-bottom:14px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;color:var(--muted);font-weight:500;font-size:12px;padding:0 0 10px;border-bottom:1px solid var(--line)}
+  td{padding:12px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+  tr:last-child td{border-bottom:0}
+  td .n{font-weight:500}
+  td .i{color:var(--muted);font-size:12px}
+  .st{font-size:11px;padding:3px 8px;border-radius:5px;font-weight:600;white-space:nowrap}
+  .st.build{background:#22352E;color:var(--mint)}
+  .st.wait{background:#3A3223;color:var(--amber)}
+  .st.done{background:#26302D;color:var(--muted)}
+  .st.pay{background:#3A2A27;color:var(--coral)}
+  .pct{font-weight:600}
+  .pct.mint{color:var(--mint)}
+  .mini{height:5px;background:var(--panel2);border-radius:3px;overflow:hidden;width:90px}
+  .mini i{display:block;height:100%;background:var(--mint)}
+
+  .flow{list-style:none}
+  .flow li{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .flow li:last-child{border-bottom:0}
+  .flow .d{color:var(--muted);width:56px;flex-shrink:0;font-size:12px;padding-top:2px}
+  .flow .a{margin-left:auto;font-weight:600;white-space:nowrap}
+  .flow .a.in{color:var(--mint)}
+  .flow p{font-size:12px;color:var(--muted)}
+
+  .deal{margin-top:14px}
+  .deal .hd{display:flex;gap:20px;align-items:flex-start;margin-bottom:16px}
+  .deal .hd h3{font-size:18px;font-weight:600}
+  .deal .hd p{color:var(--muted);font-size:13px;margin-top:4px}
+  .deal .hd .btn{margin-left:auto;background:var(--mint);color:#0F1A16;padding:9px 16px;border-radius:8px;font-weight:600;white-space:nowrap}
+  .deal .facts{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
+  .deal .facts div{background:var(--panel2);border-radius:8px;padding:10px 12px}
+  .deal .facts small{display:block;color:var(--muted);font-size:11px}
+  .deal .facts b{font-size:15px;font-weight:600}
+  .timeline{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:14px}
+  .timeline div{padding:8px 10px;border-radius:6px;background:var(--panel2);font-size:12px;color:var(--muted);border-left:3px solid var(--line)}
+  .timeline div.done{border-left-color:var(--mint);color:var(--text)}
+  .timeline div.now{border-left-color:var(--amber);color:var(--text);background:#2A3128}
+  .docs{display:flex;gap:8px;flex-wrap:wrap}
+  .docs span{font-size:12px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;color:var(--muted)}
+  .note{margin-top:14px;font-size:12px;color:var(--muted);line-height:1.6}
+  @media (max-width:960px){.app{grid-template-columns:1fr}aside{display:none}.summary,.two{grid-template-columns:1fr}.deal .facts{grid-template-columns:1fr 1fr}.timeline{grid-template-columns:1fr 1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="logo">Meken <span>Invest</span></div>
+    <a class="on" href="#">Портфель</a><a href="#">Открытые сделки</a><a href="#">Мои сделки</a><a href="#">Выплаты</a><a href="#">Документы</a><a href="#">Отчёты по сделкам</a><a href="#">Настройки</a>
+    <div class="user">Азамат Т.<small>Чикаго · инвестор с марта 2026</small></div>
+  </aside>
+
+  <main>
+    <div class="head"><h1>Портфель</h1><span class="date">на 3 сентября 2026</span><div class="cur"><span class="on">USD</span><span>KGS</span></div></div>
+
+    <div class="summary">
+      <div class="card main">
+        <small>Вложено в активные сделки</small>
+        <div class="v">$47 500</div>
+        <div class="alloc"><i style="width:42%;background:#6FD3B0"></i><i style="width:26%;background:#E4B45A"></i><i style="width:21%;background:#7FA9E0"></i><i style="width:11%;background:#B48CD9"></i></div>
+        <div class="legend"><span><b style="background:#6FD3B0"></b>Стройка 42%</span><span><b style="background:#E4B45A"></b>Материалы 26%</span><span><b style="background:#7FA9E0"></b>Земля 21%</span><span><b style="background:#B48CD9"></b>Аренда 11%</span></div>
+      </div>
+      <div class="card"><small>Получено прибыли за всё время</small><div class="v mint">+$6 840</div><div class="sub">по 3 закрытым сделкам</div></div>
+      <div class="card"><small>Ожидаемый выход до конца года</small><div class="v">$21 200</div><div class="sub">2 сделки в стадии продажи</div></div>
+      <div class="card"><small>Средняя маржа закрытых сделок</small><div class="v">16,4%</div><div class="sub">целевая была 14–18%</div></div>
+    </div>
+
+    <div class="two">
+      <div class="card">
+        <h2>Мои сделки</h2>
+        <table>
+          <tr><th>Сделка</th><th>Мой чек</th><th>Стадия</th><th>Ход</th><th>Целевая маржа</th></tr>
+          <tr><td><div class="n">Дом 180 м², Кок-Жар</div><div class="i">Истисна + мушарака · выход ~ май 2027</div></td><td>$20 000</td><td><span class="st build">Стройка</span></td><td><div class="mini"><i style="width:35%"></i></div></td><td class="pct">30–38%</td></tr>
+          <tr><td><div class="n">Арматура А500С, 320 т</div><div class="i">Мурабаха · продажа март–апрель</div></td><td>$12 500</td><td><span class="st wait">Хранение</span></td><td><div class="mini"><i style="width:15%"></i></div></td><td class="pct">12–15%</td></tr>
+          <tr><td><div class="n">Участок 8 соток, Ала-Арча</div><div class="i">Мушарака · выход 2027–28</div></td><td>$10 000</td><td><span class="st wait">Ожидание</span></td><td><div class="mini"><i style="width:10%"></i></div></td><td class="pct">28–35%</td></tr>
+          <tr><td><div class="n">Помещение 140 м², Токтогула</div><div class="i">Иджара · рента ежеквартально</div></td><td>$5 000</td><td><span class="st pay">Выплата 15 окт</span></td><td><div class="mini"><i style="width:60%"></i></div></td><td class="pct">11–13% / год</td></tr>
+          <tr><td><div class="n">Квартира, Асанбай (закрыта)</div><div class="i">Мушарака · 4,5 мес</div></td><td>$5 000</td><td><span class="st done">Закрыта</span></td><td><div class="mini"><i style="width:100%"></i></div></td><td class="pct mint">+18,2%</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Движение средств</h2>
+        <ul class="flow">
+          <li><span class="d">29 авг</span><div>Пополнение выделенного счёта<p>Перевод из США, зачислено через 2 дня</p></div><span class="a in">+$10 000</span></li>
+          <li><span class="d">30 авг</span><div>Участие: участок Ала-Арча<p>Договор мушараки подписан электронно</p></div><span class="a">−$10 000</span></li>
+          <li><span class="d">15 июл</span><div>Рента: помещение Токтогула<p>Квартал II, доля 85% инвесторам</p></div><span class="a in">+$142</span></li>
+          <li><span class="d">2 июл</span><div>Выход: квартира Асанбай<p>Капитал $5 000 + прибыль $910</p></div><span class="a in">+$5 910</span></li>
+          <li><span class="d">2 июл</span><div>Доля управляющей компании<p>25% от прибыли сделки, удержано из прибыли</p></div><span class="a">−$303</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card deal">
+      <div class="hd">
+        <div><h3>Дом 180 м², Кок-Жар — отчёт за август</h3><p>Заложен фундамент, залита плита перекрытия первого этажа. Расход арматуры по факту 11,2 т против 11,6 т по смете.</p></div>
+        <a class="btn" href="#">Открыть полный отчёт</a>
+      </div>
+      <div class="facts">
+        <div><small>Бюджет сделки</small><b>$170 000</b></div>
+        <div><small>Освоено</small><b>$61 400 · 36%</b></div>
+        <div><small>Отклонение от сметы</small><b style="color:var(--mint)">−2,1%</b></div>
+        <div><small>Предпродажа</small><b>1 запрос</b></div>
+        <div><small>Плановый выход</small><b>май 2027</b></div>
+      </div>
+      <div class="timeline">
+        <div class="done">Участок куплен<br>апр 2026</div><div class="done">Проект и смета<br>июн 2026</div><div class="now">Коробка<br>авг–ноя 2026</div><div>Кровля, окна<br>дек 2026</div><div>Отделка<br>янв–апр 2027</div><div>Продажа<br>май 2027</div>
+      </div>
+      <div class="docs"><span>Договор мушараки (подписан)</span><span>Выписка о праве на участок</span><span>Смета, проверена 12 июн</span><span>Платёжки за август · 14 шт</span><span>Фотоотчёт · 38 фото</span><span>Заключение шариатского консультанта</span></div>
+      <div class="note">Прибыль сделки не гарантирована. Если объект продастся ниже себестоимости, убыток делится пропорционально долям капитала; управляющая компания в этом случае вознаграждения не получает.</div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meken Capital — предпросмотр всего сайта</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F4EC;--paper:#FFFFFF;--ink:#1F2A24;--muted:#66716B;--line:#E3DCCD;--forest:#1E4D3B;--forest-deep:#153629;--gold:#B8862E;--sky:#DCE9E2}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Inter",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.6}
+h1,h2,h3{font-family:"Lora",Georgia,serif;font-weight:600;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+header{background:var(--bg);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;height:72px;gap:28px}
+.logo{font-family:"Lora",serif;font-weight:600;font-size:20px}
+.logo small{font-family:Inter,sans-serif;font-weight:400;font-size:12px;color:var(--muted);margin-left:8px}
+header nav{display:flex;gap:22px;font-size:14px;color:var(--muted)}
+header nav a.on{color:var(--ink);font-weight:600}
+header .r{margin-left:auto;display:flex;gap:10px;align-items:center;font-size:14px}
+.btn{display:inline-block;padding:12px 20px;border-radius:6px;font-weight:600;font-size:15px;background:var(--forest);color:#fff;border:0;cursor:pointer;font-family:inherit}
+.btn.light{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.gold{background:var(--gold);color:#1F1A0E}
+.lang{border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:13px}
+.notice{background:#EFE6D2;border-bottom:1px solid #D9CBA8;font-size:13px;color:#5B4A22}
+.notice .wrap{padding:10px 24px}
+.hero{background:var(--forest-deep);color:#fff;padding:72px 0 64px}
+.hero .wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:56px;align-items:center}
+.hero h1{font-size:50px;line-height:1.08;font-weight:500}
+.hero h1 em{font-style:italic;font-weight:500}
+.hero p{margin-top:22px;font-size:18px;color:#C9D6CF;max-width:520px}
+.hero .cta{margin-top:32px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.hero .cta span{font-size:13px;color:#9FB3A8}
+.hero .en{margin-top:36px;font-size:14px;color:#9FB3A8;border-top:1px solid #2C5A48;padding-top:14px;max-width:520px}
+.pagehead{padding:56px 0 8px}
+.pagehead h1{font-size:44px;line-height:1.1;font-weight:500}
+.pagehead p{max-width:640px;color:var(--muted);font-size:17px;margin-top:12px}
+section{padding:56px 0}
+section.alt{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+h2{font-size:32px;line-height:1.15}
+.lead{max-width:640px;color:var(--muted);font-size:17px;margin-top:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:40px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:36px}
+.k{font-family:"Lora",serif;font-size:40px;color:var(--forest);line-height:1;margin-bottom:12px}
+.grid3 h3{font-size:19px;margin-bottom:8px}
+.grid3 p,.card p{color:var(--muted);font-size:15px}
+.card{padding:24px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.card h3{font-size:19px;margin-bottom:8px}
+.card .t{font-size:13px;color:var(--gold);font-weight:600;margin-bottom:6px}
+table{width:100%;border-collapse:collapse;margin-top:28px;font-size:15px}
+th{text-align:left;font-weight:500;color:var(--muted);font-size:13px;padding:0 12px 12px 0;border-bottom:1px solid var(--line)}
+td{padding:16px 12px 16px 0;border-bottom:1px solid var(--line);vertical-align:top}
+td .n{font-weight:600}td .i{font-size:13px;color:var(--muted)}
+td.res{font-family:"Lora",serif;font-size:20px;color:var(--forest);white-space:nowrap}
+td.res.neg{color:#9A3E33}
+.tnote{margin-top:16px;font-size:13px;color:var(--muted);max-width:760px}
+.prose{max-width:720px}
+.prose h3{font-size:22px;margin:32px 0 10px}
+.prose p{margin-bottom:14px;color:#3A463F}
+.prose ul{margin:0 0 14px 20px;color:#3A463F}
+.prose li{margin-bottom:6px}
+.facts{border-left:3px solid var(--gold);padding-left:20px}
+.facts p{margin-bottom:14px;font-size:15px;color:var(--muted)}
+.facts p b{display:block;font-family:"Lora",serif;font-size:21px;font-weight:600;color:var(--ink)}
+.reg{background:var(--sky);border-radius:10px;padding:24px}
+.reg h3{font-size:18px;margin-bottom:10px}
+.reg dl{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:14px}
+.reg dt{color:var(--muted)}.reg dd{font-weight:500}
+details{border-bottom:1px solid var(--line);padding:18px 0}
+summary{font-weight:600;cursor:pointer;font-size:17px;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";color:var(--muted);font-weight:400}
+details[open] summary::after{content:"–"}
+details p{margin-top:10px;color:var(--muted);max-width:720px}
+.form{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:28px;max-width:560px}
+.form label{display:block;font-size:13px;color:var(--muted);margin:14px 0 4px}
+.form .in,.form select,.form textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:6px;font:inherit;font-size:14px;background:#FCFAF6}
+.form .chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;margin-top:12px}
+.form .chk input{margin-top:4px}
+.form .btn{width:100%;margin-top:20px}
+.form .fine{margin-top:12px;font-size:11px;color:var(--muted);line-height:1.5}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.final{background:var(--forest);color:#fff;text-align:center}
+.final h2{font-weight:500}
+.final p{color:#C9D6CF;max-width:560px;margin:12px auto 28px}
+footer{padding:36px 0;font-size:12px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line)}
+footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:32px;margin-bottom:24px;font-size:13px}
+footer .cols a{display:block;margin-bottom:6px}
+footer .cols b{display:block;color:var(--ink);margin-bottom:8px}
+@media (max-width:900px){.hero .wrap,.two,.grid2,.grid3,footer .cols{grid-template-columns:1fr}.hero h1{font-size:36px}.pagehead h1{font-size:34px}header nav{display:none}}
+
+.topnav{position:sticky;top:0;z-index:9;background:var(--forest-deep);color:#fff}
+.topnav .wrap{display:flex;gap:18px;height:48px;align-items:center;font-size:13px;overflow-x:auto;white-space:nowrap}
+.topnav a{color:#C9D6CF} .topnav b{color:#fff;margin-right:8px}
+.secbar{background:var(--gold);color:#1F1A0E;font-size:12px;font-weight:600;letter-spacing:.04em}
+.secbar .wrap{padding:6px 24px}
+header{position:static}
+
+[data-go]{cursor:pointer}
+header nav a{white-space:nowrap}
+</style></head><body>
+<div class="topnav"><div class="wrap"><b>Предпросмотр · 9 страниц</b><a data-go="home" role="button" tabindex="0">Главная</a><a data-go="about" role="button" tabindex="0">Управляющий</a><a data-go="principles" role="button" tabindex="0">Принципы</a><a data-go="track" role="button" tabindex="0">Закрытые сделки</a><a data-go="faq" role="button" tabindex="0">Вопросы</a><a data-go="invite" role="button" tabindex="0">Приглашение</a><a data-go="login" role="button" tabindex="0">Вход</a><a data-go="disclosure" role="button" tabindex="0">Раскрытие</a><a data-go="en" role="button" tabindex="0">English</a></div></div>
+<header><div class="wrap"><a class="logo" data-go="home" role="button">Meken Capital<small>венчурный управляющий, Бишкек</small></a><nav><a data-go="home" role="button" tabindex="0">Главная</a><a data-go="about" role="button" tabindex="0">Управляющий</a><a data-go="principles" role="button" tabindex="0">Принципы</a><a data-go="track" role="button" tabindex="0">Закрытые сделки</a><a data-go="faq" role="button" tabindex="0">Вопросы</a><a data-go="invite" role="button" tabindex="0">Приглашение</a><a data-go="login" role="button" tabindex="0">Вход</a><a data-go="disclosure" role="button" tabindex="0">Раскрытие</a><a data-go="en" role="button" tabindex="0">English</a></nav><div class="r"><a class="btn light" data-go="login" role="button">Вход для участников</a><a class="btn" data-go="invite" role="button">Запросить приглашение</a></div></div></header>
+<div class="notice"><div class="wrap">Участие доступно только квалифицированным инвесторам и бизнес-ангелам. Сайт не является публичной офертой и не содержит условий действующих сделок.</div></div>
+<div id="home" style="scroll-margin-top:110px"></div><div class="secbar"><div class="wrap">Главная</div></div>
+<section class="hero"><div class="wrap">
+  <div>
+    <h1>Мы управляем деньгами кыргызстанцев, <em>которые живут далеко, но строят дома.</em></h1>
+    <p>Meken Capital — венчурный управляющий из Бишкека. Мы финансируем стройку, стройматериалы и технологии для стройки на принципах партнёрства, без ссудного процента, и отчитываемся перед каждым участником ежеквартально.</p>
+    <div class="cta"><a class="btn gold" data-go="invite" role="button">Запросить приглашение</a><span>Персональный разговор · 30 минут · без обязательств</span></div>
+    <div class="en">A registered venture manager in Bishkek. Shariah-compliant, partnership-based, quarterly reporting in English and Russian. <a data-go="en" role="button" tabindex="0" style="text-decoration:underline">English version</a></div>
+  </div>
+  <div class="form" style="box-shadow:0 20px 50px rgba(0,0,0,.25)">
+    <h3 style="font-size:18px">Запросить приглашение</h3>
+    <div style="font-size:13px;color:var(--muted)">Мы свяжемся лично. Условия сделок раскрываются только после подтверждения статуса.</div>
+    <label>Имя</label><input class="in" placeholder="Азамат">
+    <label>Город и страна проживания</label><input class="in" placeholder="Чикаго, США">
+    <label>Как с вами связаться</label><input class="in" placeholder="WhatsApp, Telegram или e-mail">
+    <label class="chk"><input type="checkbox"><span>Я понимаю, что участие предполагает высокий риск и доступно только квалифицированным инвесторам или бизнес-ангелам</span></label>
+    <a class="btn" data-go="invite" role="button">Продолжить</a>
+    <div class="fine">Запрос не является заявкой на инвестирование. Средства не принимаются до подписания договора фонда и проверки источника средств.</div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Как мы работаем с деньгами на расстоянии</h2>
+  <p class="lead">Главный страх диаспоры — отдать деньги домой и потерять контроль. Каждое из этих правил закреплено в договоре фонда, а не в обещаниях.</p>
+  <div class="grid3">
+    <div><div class="k">0</div><h3>Ссудного процента</h3><p>Только мушарака, мурабаха, иджара, истисна и соглашения о будущей доле. Каждую сделку до входа согласовывает шариатский совет.</p></div>
+    <div><div class="k">4</div><h3>Отчёта в год, минимум</h3><p>Ежеквартальный отчёт по каждой сделке: платёжки, ход работ, отклонение от сметы. По стройке — ежемесячно, с фото.</p></div>
+    <div><div class="k">0%</div><h3>Нашего дохода без вашей прибыли</h3><p>Управляющий получает долю только из фактической прибыли после возврата капитала. В убыточной сделке — ничего.</p></div>
+  </div>
+</div></section>
+
+<section class="alt"><div class="wrap">
+  <h2>Что мы финансируем</h2>
+  <p class="lead">Три направления с разным сроком и характером риска. Действующие сделки видны только участникам.</p>
+  <div class="grid3">
+    <div class="card"><div class="t">Короткий цикл</div><h3>Стройматериалы</h3><p>Закупка материалов в межсезонье и рассрочка материалов подрядчикам с раскрытой наценкой через технологическую компанию группы.</p></div>
+    <div class="card"><div class="t">Средний цикл</div><h3>Дома и квартиры</h3><p>Вход с котлована в частные дома, покупка квартир ниже рынка с быстрым ремонтом и продажей.</p></div>
+    <div class="card"><div class="t">Технологии</div><h3>Строительные стартапы</h3><p>Доли в компаниях, которые автоматизируют стройку и закупки. Соглашения о будущей доле, без конвертируемых займов.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap two">
+  <div><h2>Закрытые сделки</h2><p class="lead">Публикуем только завершённые сделки с фактическим результатом, включая убыточные.</p><p style="margin-top:20px"><a class="btn light" data-go="track" role="button">Смотреть все закрытые сделки</a></p></div>
+  <div class="facts">
+    <p><b>11 сделок закрыто</b>с марта 2025 года, средний срок 8 месяцев</p>
+    <p><b>1 убыточная</b>убыток разделён между участниками, управляющий вознаграждения не получил</p>
+    <p><b>$860 000</b>возвращено участникам вместе с прибылью</p>
+  </div>
+</div></section>
+
+<section class="final"><div class="wrap">
+  <h2>Первый разговор — 30 минут</h2>
+  <p>Расскажем, как устроен фонд, покажем отчёты по закрытым сделкам, ответим на вопросы про структуру, статус участника и переводы.</p>
+  <a class="btn gold" data-go="invite" role="button">Запросить приглашение</a>
+</div></section>
+<div id="about" style="scroll-margin-top:110px"></div><div class="secbar"><div class="wrap">Управляющий</div></div>
+<div class="wrap pagehead"><h1>Кто управляет</h1><p>Управляющий, команда, шариатский совет и связанные компании — всё, что участник должен знать до подписания договора.</p></div>
+<section><div class="wrap two">
+  <div class="prose">
+    <h3>Асан Ширгебаев, венчурный управляющий</h3>
+    <p>Более десяти лет в банковском секторе Кыргызстана: от финансового директора до председателя правления. Затем — собственный девелопмент и строительство в Бишкеке, сеть медицинских центров, технологическая компания для автоматизации стройки.</p>
+    <p>Фонд вырос из простой проблемы: родственники в США хотели вкладывать дома, но никто не показывал им смету. Мы показываем.</p>
+    <h3>Команда</h3>
+    <ul>
+      <li><b>Инвестиционный анализ</b> — расчёт каждой сделки: смета, сценарии, стресс-тест по цене выхода.</li>
+      <li><b>Технадзор</b> — контроль стройки и закупок, ежемесячные фотоотчёты и сверка объёмов.</li>
+      <li><b>Отчётность и комплаенс</b> — квартальные отчёты участникам, идентификация инвесторов и проверка источника средств.</li>
+    </ul>
+    <h3>Шариатский совет</h3>
+    <p>Независимые консультанты по исламскому праву. Согласуют структуру каждой сделки до вызова капитала; заключение прикладывается к документам сделки в кабинете участника.</p>
+    <h3>Связанные компании</h3>
+    <p>Управляющий владеет долями в Bishkek Properties, MedCity и Planalytic. Сделки с этими компаниями возможны только при предварительном уведомлении и голосовании участников фонда — это условие договора фонда, а не наша добрая воля.</p>
+  </div>
+  <div>
+    <div class="reg">
+      <h3>Регистрация</h3>
+      <dl>
+        <dt>Статус</dt><dd>Венчурный управляющий</dd>
+        <dt>Реестр</dt><dd>Реестр венчурных фондов и венчурных управляющих КР, № ______</dd>
+        <dt>Форма фонда</dt><dd>Договор об организации венчурного фонда, без образования юрлица</dd>
+        <dt>Аудит</dt><dd>Ежегодный внешний аудит</dd>
+        <dt>Счёт фонда</dt><dd>Банк с исламским окном, Бишкек</dd>
+        <dt>Споры</dt><dd>Международный коммерческий арбитраж по договору</dd>
+        <dt>Контакт</dt><dd>capital@meken.capital</dd>
+      </dl>
+    </div>
+    <div class="facts" style="margin-top:32px">
+      <p><b>Мы строим сами</b>Смету на объект проверяет та же команда, что считает наши.</p>
+      <p><b>Данные о подрядчиках</b>Отбираем по истории реальных строек, а не по обещаниям.</p>
+    </div>
+  </div>
+</div></section>
+<div id="principles" style="scroll-margin-top:110px"></div><div class="secbar"><div class="wrap">Принципы</div></div>
+<div class="wrap pagehead"><h1>Принципы, которые нельзя отменить голосованием</h1><p>Исламские инструменты и правила фонда. Всё это записано в договоре об организации венчурного фонда — участник получает его до внесения первого сома.</p></div>
+<section><div class="wrap">
+  <h2>Инструменты</h2>
+  <p class="lead">Ни в одном из них нет ссудного процента. Доход участника — только доля в результате.</p>
+  <div class="grid2">
+    <div class="card"><div class="t">Совместное владение</div><h3>Мушарака</h3><p>Участники и управляющий вкладывают капитал в объект — участок, дом, квартиру — и владеют им долями. Прибыль от продажи делится по договору, убыток — пропорционально капиталу.</p></div>
+    <div class="card"><div class="t">Купля-продажа с раскрытой наценкой</div><h3>Мурабаха</h3><p>Фонд покупает материалы и продаёт их подрядчику в рассрочку с известной заранее наценкой. Наценка раскрыта покупателю и участникам; штрафов за просрочку в пользу фонда нет.</p></div>
+    <div class="card"><div class="t">Аренда</div><h3>Иджара</h3><p>Помещение в совместной собственности сдаётся арендатору. Рента делится по долям владения, выплачивается ежеквартально.</p></div>
+    <div class="card"><div class="t">Заказ на строительство</div><h3>Истисна</h3><p>Оплата стройки этапами по факту работ. Результат делится как в мушараке. Применяется к домам с котлована.</p></div>
+    <div class="card"><div class="t">Стартапы</div><h3>Соглашение о будущей доле</h3><p>Для технологических компаний: капитал в обмен на долю при наступлении условий, с потолком оценки и дисконтом. Конвертируемые займы с процентом не используем.</p></div>
+    <div class="card"><div class="t">Вознаграждение управляющего</div><h3>Мудараба</h3><p>Управляющий получает долю прибыли сделки только после возврата капитала участникам. В убыточной сделке вознаграждение равно нулю.</p></div>
+  </div>
+</div></section>
+<section class="alt"><div class="wrap">
+  <h2>Правила фонда</h2>
+  <div class="grid2">
+    <div class="card"><h3>Одна сделка — один вызов капитала</h3><p>Деньги вносятся по вызову под конкретную сделку и не лежат на процентных депозитах. Не собрали сумму к дедлайну — возврат полностью.</p></div>
+    <div class="card"><h3>Согласие участников на сделки со связанными компаниями</h3><p>Если сделка касается компании, в которой у управляющего есть доля, участники уведомляются заранее и голосуют. Без согласия сделка не проходит.</p></div>
+    <div class="card"><h3>Лимит на одного участника</h3><p>Не более 40% одной сделки на одного участника, чтобы результат не зависел от решения одного человека.</p></div>
+    <div class="card"><h3>Никаких гарантий дохода</h3><p>Мы не обещаем и не гарантируем доходность ни устно, ни письменно. Всё, что мы показываем публично — фактические результаты закрытых сделок.</p></div>
+    <div class="card"><h3>Шариатский совет до вызова капитала</h3><p>Ни одна сделка не открывается участникам без письменного заключения совета о структуре.</p></div>
+    <div class="card"><h3>Споры — в нейтральном арбитраже</h3><p>Договор фонда предусматривает передачу споров в международный коммерческий арбитраж за пределами Кыргызстана.</p></div>
+  </div>
+</div></section>
+<section><div class="wrap prose">
+  <h2>Чего мы не делаем</h2>
+  <ul style="margin-top:20px">
+    <li>Не берём и не выдаём кредиты под процент, не размещаем свободные средства фонда на процентных депозитах и в госбумагах.</li>
+    <li>Не используем деривативы, хеджирование через свопы и опционы на курс.</li>
+    <li>Не привлекаем средства от лиц, не являющихся квалифицированными инвесторами или бизнес-ангелами.</li>
+    <li>Не публикуем условия действующих сделок и не рассылаем их вне кабинета участника.</li>
+    <li>Не финансируем деятельность, запрещённую исламским правом.</li>
+  </ul>
+</div></section>
+<div id="track" style="scroll-margin-top:110px"></div><div class="secbar"><div class="wrap">Закрытые сделки</div></div>
+<div class="wrap pagehead"><h1>Закрытые сделки</h1><p>Только завершённые сделки с фактическим результатом для участников. Действующие сделки — в кабинете участника.</p></div>
+<section><div class="wrap">
+  <table>
+    <tr><th>Закрыта</th><th>Сделка</th><th>Инструмент</th><th>Срок</th><th>Результат для участников</th></tr>
+    <tr><td>июл 2026</td><td><div class="n">2-комн. квартира, Асанбай</div><div class="i">покупка ниже рынка, косметический ремонт, продажа</div></td><td>Мушарака</td><td>4,5 мес</td><td class="res">+18,2%</td></tr>
+    <tr><td>апр 2026</td><td><div class="n">Арматура А500С, 180 т</div><div class="i">закупка в межсезонье, продажа застройщикам</div></td><td>Мурабаха</td><td>5 мес</td><td class="res">+13,1%</td></tr>
+    <tr><td>мар 2026</td><td><div class="n">Дом 160 м², Кок-Жар</div><div class="i">вход на стадии фундамента, продажа после отделки</div></td><td>Истисна + мушарака</td><td>12 мес</td><td class="res">+31,4%</td></tr>
+    <tr><td>фев 2026</td><td><div class="n">Участок 6 соток, Чон-Арык</div><div class="i">продан раньше плана из-за изменения генплана</div></td><td>Мушарака</td><td>9 мес</td><td class="res neg">−4,0%</td></tr>
+    <tr><td>дек 2025</td><td><div class="n">Помещение 90 м², Токтогула</div><div class="i">аренда сетевому арендатору, продажа с арендатором</div></td><td>Иджара</td><td>14 мес</td><td class="res">+22,7%</td></tr>
+    <tr><td>окт 2025</td><td><div class="n">Цемент и блоки, партия</div><div class="i">рассрочка трём подрядчикам, наценка 10%</div></td><td>Мурабаха</td><td>6 мес</td><td class="res">+9,3%</td></tr>
+  </table>
+  <div class="tnote">Результат — фактическая доля участников после вознаграждения управляющего, в валюте сделки (USD или KGS). Результаты прошлых сделок не являются прогнозом будущих. Убыточная сделка показана намеренно: убыток разделён между участниками пропорционально капиталу, управляющий вознаграждения не получил. Полные отчёты по каждой сделке — платёжки, акты, фото — доступны участникам.</div>
+</div></section>
+<section class="alt"><div class="wrap prose">
+  <h2>Как мы считаем результат</h2>
+  <p style="margin-top:16px">Результат сделки — это сумма, фактически поступившая на счёт участника, делённая на внесённый им капитал, минус единица. Не годовых, не «целевых», не до вознаграждения. Если сделка в сомах — результат в сомах; пересчёт в доллары показываем отдельно по курсу дня выплаты.</p>
+  <p>Мы не публикуем среднюю доходность по всем сделкам: короткая мурабаха и годовой дом с котлована не складываются в одно число без искажений.</p>
+</div></section>
+<div id="faq" style="scroll-margin-top:110px"></div><div class="secbar"><div class="wrap">Вопросы</div></div>
+<div class="wrap pagehead"><h1>Вопросы, которые задают первыми</h1></div>
+<section><div class="wrap" style="max-width:820px">
+  <details open><summary>Это халяль?</summary><p>Ни одна сделка не содержит ссудного процента. Конвертируемые займы не используем — только соглашения о будущей доле, мушараку, мурабаху, иджару и истисну. Доходность никогда не гарантируется; прибыль и убыток делятся по договору. Каждую сделку до вызова капитала согласовывает шариатский совет.</p></details>
+  <details><summary>Кто может участвовать?</summary><p>Квалифицированные инвесторы и бизнес-ангелы по законодательству Кыргызской Республики, включая граждан и резидентов других стран. Статус подтверждается до подписания договора. Условия сделок мы не публикуем и не рассылаем — они раскрываются лично.</p></details>
+  <details><summary>Что такое квалифицированный инвестор?</summary><p>Критерии установлены законодательством КР о рынке ценных бумаг: опыт, объём активов или профессиональная квалификация. Мы проверяем соответствие по документам до подписания договора. Если вы не уверены в своём статусе — скажите об этом на первом разговоре, мы объясним, что нужно.</p></details>
+  <details><summary>Почему на сайте нет действующих сделок и доходности?</summary><p>Закон запрещает управляющему публично предлагать участие в фонде в период сбора капитала. Мы показываем только завершённые сделки и результат по факту. Действующие — в кабинете участника.</p></details>
+  <details><summary>Что если сделка уйдёт в минус?</summary><p>Убыток делится пропорционально капиталу. Управляющий в таком случае не получает вознаграждения. Одна такая сделка есть в нашей истории — она показана в разделе «Закрытые сделки».</p></details>
+  <details><summary>Как переводить деньги из США и получать обратно?</summary><p>Банковским переводом на счёт фонда в банке с исламским окном, по вызову капитала под конкретную сделку. Возврат — на счёт, с которого пришли деньги. Документы для налоговой отчётности готовим на английском.</p></details>
+  <details><summary>Какой минимальный и максимальный чек?</summary><p>Минимум зависит от сделки и сообщается участникам в кабинете. Максимум ограничен долей одного участника — не более 40% одной сделки.</p></details>
+  <details><summary>Могу ли я выйти раньше срока?</summary><p>Свою долю в сделке можно предложить другим участникам фонда. Управляющий не гарантирует выкуп, но ведёт доску предложений в кабинете.</p></details>
+  <details><summary>Как я узнаю, что деньги пошли туда, куда сказано?</summary><p>Каждый платёж со счёта сделки виден в кабинете с назначением и получателем. По стройке — ежемесячный фотоотчёт и сверка объёмов со сметой. Раз в год — внешний аудит фонда.</p></details>
+  <details><summary>Что происходит с моими деньгами до начала сделки?</summary><p>Ничего: мы не собираем деньги заранее. Капитал вызывается только под подписанную сделку, и если сумма не собрана к дедлайну — внесённое возвращается полностью.</p></details>
+</div></section>
+<div id="invite" style="scroll-margin-top:110px"></div><div class="secbar"><div class="wrap">Приглашение</div></div>
+<div class="wrap pagehead"><h1>Запросить приглашение</h1><p>Мы свяжемся лично в течение двух рабочих дней. Условия сделок раскрываются только после подтверждения статуса и подписания договора фонда.</p></div>
+<section><div class="wrap two">
+  <div class="form">
+    <label>Имя и фамилия</label><input class="in" placeholder="Азамат Токтосунов">
+    <label>Город и страна проживания</label><input class="in" placeholder="Чикаго, США">
+    <label>Как с вами связаться</label><input class="in" placeholder="WhatsApp, Telegram или e-mail">
+    <label>Откуда узнали о нас</label><select><option>Рекомендация знакомого</option><option>Личное знакомство с управляющим</option><option>Другое</option></select>
+    <label>Что вам интересно</label><textarea rows="3" placeholder="Например: стройка с котлована, срок до года"></textarea>
+    <label class="chk"><input type="checkbox"><span>Я понимаю, что участие предполагает высокий риск, включая возможную потерю капитала</span></label>
+    <label class="chk"><input type="checkbox"><span>Я являюсь квалифицированным инвестором или бизнес-ангелом либо готов подтвердить статус документами</span></label>
+    <label class="chk"><input type="checkbox"><span>Я понимаю, что этот запрос не является заявкой на инвестирование и никакие средства сейчас не принимаются</span></label>
+    <button class="btn" type="button">Отправить запрос</button>
+    <div class="fine">Отправляя запрос, вы соглашаетесь на обработку контактных данных для связи. Данные не передаются третьим лицам.</div>
+  </div>
+  <div class="prose">
+    <h3 style="margin-top:0">Что будет дальше</h3>
+    <p><b>1. Разговор — 30 минут.</b> Расскажем, как устроен фонд, покажем отчёты по закрытым сделкам, ответим на вопросы.</p>
+    <p><b>2. Подтверждение статуса.</b> Документы, подтверждающие статус квалифицированного инвестора или бизнес-ангела, и идентификация по требованиям законодательства КР.</p>
+    <p><b>3. Договор фонда.</b> Подписание договора об организации венчурного фонда. С этого момента открывается кабинет участника с действующими сделками.</p>
+    <p><b>4. Вызов капитала.</b> Только под конкретную сделку, после заключения шариатского совета.</p>
+    <h3>Чего не будет</h3>
+    <p>Мы не пришлём «презентацию с доходностью», не попросим перевести деньги до подписания договора и не будем звонить повторно, если вы не ответили.</p>
+  </div>
+</div></section>
+<div id="login" style="scroll-margin-top:110px"></div><div class="secbar"><div class="wrap">Вход</div></div>
+<div class="wrap pagehead"><h1>Вход для участников</h1><p>Кабинет доступен после подписания договора фонда.</p></div>
+<section><div class="wrap two">
+  <div class="form">
+    <label>E-mail, указанный в договоре</label><input class="in" placeholder="name@example.com">
+    <button class="btn" type="button">Получить код входа</button>
+    <div class="fine">Код придёт на e-mail и действует 10 минут. Паролей нет.</div>
+  </div>
+  <div class="prose">
+    <h3 style="margin-top:0">Что внутри кабинета</h3>
+    <ul>
+      <li>Действующие сделки: структура, документы, заключение шариатского совета, вызов капитала.</li>
+      <li>Ваш портфель по сделкам и стадиям.</li>
+      <li>Движение средств по каждой сделке — каждый платёж с назначением.</li>
+      <li>Ежемесячные отчёты по стройке, ежеквартальные отчёты фонда, годовой аудит.</li>
+      <li>Голосования: сделки со связанными компаниями, изменения договора.</li>
+      <li>Доска предложений для передачи доли другому участнику.</li>
+    </ul>
+    <p>Нет доступа? <a data-go="invite" role="button" tabindex="0" style="text-decoration:underline">Запросите приглашение</a>.</p>
+  </div>
+</div></section>
+<div id="disclosure" style="scroll-margin-top:110px"></div><div class="secbar"><div class="wrap">Раскрытие</div></div>
+<div class="wrap pagehead"><h1>Правовая информация</h1></div>
+<section><div class="wrap prose">
+  <h3 style="margin-top:0">Статус</h3>
+  <p>Meken Capital — венчурный управляющий, действующий на основании Закона Кыргызской Республики «О венчурном финансировании». Фонд создаётся по договору об организации венчурного фонда без образования юридического лица. Сведения о регистрации в реестре венчурных фондов и венчурных управляющих: № ______ (будет указан после регистрации).</p>
+  <h3>Не публичная оферта</h3>
+  <p>Информация на сайте носит справочный характер и не является рекламой венчурного фонда, публичной офертой, предложением инвестировать или консультацией. Условия участия и действующие сделки раскрываются только лицам, подтвердившим статус квалифицированного инвестора или бизнес-ангела, после подписания договора фонда.</p>
+  <h3>Кто может участвовать</h3>
+  <p>Только квалифицированные инвесторы и бизнес-ангелы в соответствии с законодательством Кыргызской Республики о рынке ценных бумаг и об инвестиционных фондах. Участники из других стран самостоятельно отвечают за соблюдение требований законодательства страны своего проживания; управляющий не предлагает участие лицам, для которых это запрещено.</p>
+  <h3>Риски</h3>
+  <p>Участие предполагает высокий риск, включая полную потерю внесённого капитала. Доходность не гарантируется и не обещается. Результаты завершённых сделок не являются прогнозом. Убытки распределяются между участниками пропорционально внесённому капиталу.</p>
+  <h3>Связанные лица</h3>
+  <p>Управляющий владеет долями в компаниях Bishkek Properties, MedCity и Planalytic. Сделки фонда с этими компаниями допускаются только при предварительном уведомлении и согласии участников в порядке, установленном договором фонда.</p>
+  <h3>Противодействие отмыванию средств</h3>
+  <p>Управляющий проводит идентификацию участников и проверку источника происхождения средств в соответствии с законодательством Кыргызской Республики. Средства принимаются только банковским переводом со счёта участника.</p>
+  <h3>Персональные данные</h3>
+  <p>Данные, переданные через форму запроса приглашения, используются только для связи и не передаются третьим лицам. Данные участников фонда обрабатываются в объёме, необходимом для исполнения договора и требований законодательства.</p>
+  <h3>Споры</h3>
+  <p>Договором фонда предусмотрена передача споров в международный коммерческий арбитраж. Применимое право и место арбитража указаны в договоре.</p>
+  <h3>Контакт</h3>
+  <p>capital@meken.capital · Бишкек, Кыргызская Республика</p>
+</div></section>
+<div id="en" style="scroll-margin-top:110px"></div><div class="secbar"><div class="wrap">English</div></div>
+<section class="hero"><div class="wrap">
+  <div>
+    <h1>You work in America. <em>Your money can build at home.</em></h1>
+    <p>Meken Capital is a venture manager in Bishkek. We finance construction, building materials and construction technology on partnership terms — no interest-bearing debt — and report to every participant quarterly.</p>
+    <div class="cta"><a class="btn gold" data-go="invite" role="button">Request an invitation</a><span>A 30-minute conversation · no obligation</span></div>
+    <div class="en">Participation is by personal invitation only, for qualified investors and business angels under Kyrgyz law. Your eligibility under the laws of your own country of residence is your responsibility; we do not solicit anyone for whom participation is prohibited.</div>
+  </div>
+  <div class="facts" style="color:#fff">
+    <p><b style="color:#fff">No interest, ever</b><span style="color:#C9D6CF">Musharakah, murabaha, ijarah, istisna and future-equity agreements. Every deal is approved by a Shariah board before capital is called.</span></p>
+    <p><b style="color:#fff">Quarterly reports, monthly on construction</b><span style="color:#C9D6CF">Every payment from a deal account is visible to participants with its purpose and recipient.</span></p>
+    <p><b style="color:#fff">We earn only from realised profit</b><span style="color:#C9D6CF">The manager's share is paid after your capital is returned. A loss-making deal pays us nothing.</span></p>
+  </div>
+</div></section>
+<section><div class="wrap">
+  <h2>Completed deals</h2>
+  <p class="lead">We publish completed deals only, with actual results — including the loss.</p>
+  <table>
+    <tr><th>Closed</th><th>Deal</th><th>Instrument</th><th>Term</th><th>Participants' result</th></tr>
+    <tr><td>Jul 2026</td><td><div class="n">2-bed apartment, Asanbai</div><div class="i">bought below market, light renovation, sold</div></td><td>Musharakah</td><td>4.5 mo</td><td class="res">+18.2%</td></tr>
+    <tr><td>Apr 2026</td><td><div class="n">Rebar A500C, 180 t</div><div class="i">off-season purchase, sold to developers</div></td><td>Murabaha</td><td>5 mo</td><td class="res">+13.1%</td></tr>
+    <tr><td>Mar 2026</td><td><div class="n">House 160 m², Kok-Jar</div><div class="i">entered at foundation stage, sold after finishing</div></td><td>Istisna + musharakah</td><td>12 mo</td><td class="res">+31.4%</td></tr>
+    <tr><td>Feb 2026</td><td><div class="n">Land plot, Chon-Aryk</div><div class="i">sold early after a zoning change</div></td><td>Musharakah</td><td>9 mo</td><td class="res neg">−4.0%</td></tr>
+  </table>
+  <div class="tnote">Results are the participants' actual share after the manager's fee, in the deal currency. Past results are not a forecast. The loss was shared by participants in proportion to capital; the manager received no fee.</div>
+</div></section>
+<section class="alt"><div class="wrap" style="max-width:820px">
+  <h2>First questions</h2>
+  <details open><summary>Is it halal?</summary><p>No deal carries interest. We do not use convertible loans — only future-equity agreements, musharakah, murabaha, ijarah and istisna. Returns are never guaranteed; profit and loss are shared by contract. A Shariah board approves every deal before capital is called.</p></details>
+  <details><summary>Who can participate?</summary><p>Qualified investors and business angels under Kyrgyz law, including citizens and residents of other countries. Status is verified before the fund agreement is signed. Deal terms are never published or mailed — they are disclosed in person.</p></details>
+  <details><summary>Why are there no live deals or returns on this site?</summary><p>The law prohibits a venture manager from publicly offering participation while raising capital. We show completed deals only. Live deals are in the participant cabinet.</p></details>
+  <details><summary>How do I send money from the US and get it back?</summary><p>By bank transfer to the fund account at a bank with an Islamic window, on a capital call for a specific deal. Returns go to the account the money came from. We prepare English documents for your tax filing.</p></details>
+</div></section>
+<section class="final"><div class="wrap">
+  <h2>A 30-minute conversation</h2>
+  <p>We explain how the fund works, show reports on completed deals and answer questions on structure, status and transfers.</p>
+  <a class="btn gold" data-go="invite" role="button">Request an invitation</a>
+</div></section>
+
+<footer><div class="wrap">Предпросмотр: все страницы сайта meken.capital на одном экране. В рабочей версии каждая секция — отдельная страница. Цифры закрытых сделок иллюстративные. © 2026</div></footer>
+<script>
+document.addEventListener('click',function(e){var t=e.target.closest('[data-go]');if(!t)return;e.preventDefault();var el=document.getElementById(t.getAttribute('data-go'));if(el)el.scrollIntoView({behavior:'smooth',block:'start'});});
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.hasAttribute&&e.target.hasAttribute('data-go'))e.target.click();});
+</script></body></html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /login.html
+Sitemap: https://meken.capital/sitemap.xml
