@@ -73,7 +73,9 @@ test('public information pages always return to the unified portal', () => {
 });
 
 test('presentation and English pages expose the unified portal', () => {
-  assert.match(readFileSync(join(root, 'index.html'), 'utf8'), /href="concepts\/market\.html">Единый портал<\/a>/);
+  const homepage = readFileSync(join(root, 'index.html'), 'utf8');
+  assert.match(homepage, /href="concepts\/market\.html">Единый портал<\/a>/);
+  assert.match(homepage, /http-equiv="refresh" content="0; url=concepts\/market\.html#market"/);
   assert.match(readFileSync(join(root, 'en/index.html'), 'utf8'), /href="\.\.\/concepts\/market\.html">← Unified portal<\/a>/);
 });
 

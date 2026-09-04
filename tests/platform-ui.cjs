@@ -15,8 +15,8 @@ function boot(mode,stored){
 }
 for(const mode of ['market','club','flow'])test(mode+' loads working surfaces and opens a project',()=>{
  const x=boot(mode);assert.ok(x.d.querySelector('h1').textContent.length>5);
- assert.equal(x.d.querySelector('.portal-back').getAttribute('href'),mode==='market'?'../index.html':'market.html');
- assert.equal(x.d.querySelectorAll('.route-links a').length,4);
+ assert.equal(x.d.querySelectorAll('.route-links a').length,3);
+ assert.equal(x.d.querySelector('.route-links a.active').dataset.modeSwitch,mode);
  x.click('[data-open="materials"]');assert.equal(x.d.querySelector('#detail-dialog').open,true);
  assert.match(x.d.querySelector('#calc-profit').textContent,/28/);
  x.click('[data-scenario="down"]');assert.match(x.d.querySelector('#calc-profit').textContent,/-42/);
@@ -25,6 +25,14 @@ for(const mode of ['market','club','flow'])test(mode+' loads working surfaces an
  x.click('#add-draft');assert.equal(x.d.querySelector('#detail-dialog').open,false);
  x.click('[data-view="portfolio"]');assert.match(x.d.querySelector('#portfolio-view').textContent,/Арматура/);
  x.click('[data-remove="0"]');assert.match(x.d.querySelector('#portfolio-view').textContent,/Пока нет/);
+ x.dom.window.close();
+});
+test('product modes and information switch inside one persistent shell',()=>{
+ const x=boot('market');const header=x.d.querySelector('.top');
+ x.click('[data-mode-switch="club"]');assert.equal(x.d.querySelector('.top'),header);assert.equal(x.d.body.className,'club');assert.match(x.d.querySelector('#catalog-view').textContent,/Закрытый круг/);
+ x.click('[data-mode-switch="flow"]');assert.equal(x.d.querySelector('.top'),header);assert.equal(x.d.body.className,'flow');assert.ok(x.d.querySelector('.flow-shell'));
+ x.click('[data-view="faq"]');assert.equal(x.d.querySelector('.top'),header);assert.equal(x.d.querySelector('#faq-view').hidden,false);assert.match(x.d.querySelector('#faq-view').textContent,/Мурабаха/);
+ x.click('[data-view="about"]');assert.equal(x.d.querySelector('.top'),header);assert.match(x.d.querySelector('#about-view').textContent,/Одна платформа/);
  x.dom.window.close();
 });
 test('filters, empty state, comparison selection and reset',()=>{
