@@ -12,7 +12,7 @@
 
 ### Changed
 
-- Домен и контактные адреса приведены к `meken.capital` (`CNAME`, `sitemap.xml`, `robots.txt`, canonical, правовые страницы и тестовые доступы).
+- Домен и контактные адреса приведены к `meken.im` (`CNAME`, `sitemap.xml`, `robots.txt`, canonical, правовые страницы и тестовые доступы).
 
 ## [0.1.0.0] - 2026-09-04
 
