@@ -1,0 +1,11 @@
+{
+  "name": "meken-capital-portal",
+  "version": "0.1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/site.test.mjs tests/platform-model.test.mjs tests/platform-ui.cjs tests/admin-ui.cjs tests/investor-ui.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}
