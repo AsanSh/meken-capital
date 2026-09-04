@@ -10,7 +10,7 @@
       .toLowerCase();
     const password = document.getElementById("investor-password").value;
     const error = document.getElementById("login-error");
-    if (email === "investor@meke.capital" && password === "MekenInvestor!") {
+    if (email === "investor@meken.capital" && password === "MekenInvestor!") {
       sessionStorage.setItem("meken-investor-auth", "ok");
       location.href = "investor.html";
       return;

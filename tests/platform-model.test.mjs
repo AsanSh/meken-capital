@@ -37,3 +37,20 @@ test('profit allocation and participation scale consistently',()=>{
  assert.equal(new Set(projects.map(p=>p.id)).size,6);
  assert.ok(projects.every(p=>p.min>0&&p.min<=p.max&&p.raised<p.capital));
 });
+test('annualRate brings different cycle lengths to one comparable base',()=>{
+ const expected={materials:16.8,house:12,apartment:21,land:14,offplan:8.4,rent:6.3};
+ for(const p of projects){
+  const e=economics(p,p.min);
+  assert.ok(Math.abs(e.annualRate-expected[p.id])<.0001,`${p.id}: ${e.annualRate}`);
+  assert.ok(Math.abs(e.annualRate-e.rate*12/p.months)<1e-9,p.id);
+ }
+});
+test('ranking by result uses the annual base, not the raw cycle result',()=>{
+ const byCycle=[...projects].sort((a,b)=>economics(b,b.min).rate-economics(a,a.min).rate).map(p=>p.id);
+ const byYear=[...projects].sort((a,b)=>economics(b,b.min).annualRate-economics(a,a.min).annualRate).map(p=>p.id);
+ // сортировка по результату за цикл ставила первым самый слабый по годовой ставке проект
+ assert.equal(byCycle[0],'offplan');
+ assert.equal(byYear[0],'apartment');
+ assert.equal(byYear.at(-1),'rent');
+ assert.notDeepEqual(byCycle,byYear);
+});
