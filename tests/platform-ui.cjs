@@ -15,7 +15,7 @@ function boot(mode,stored){
 }
 for(const mode of ['market','club','flow'])test(mode+' loads working surfaces and opens a project',()=>{
  const x=boot(mode);assert.ok(x.d.querySelector('h1').textContent.length>5);
- assert.equal(x.d.querySelector('.portal-back').getAttribute('href'),'../index.html');
+ assert.equal(x.d.querySelector('.portal-back').getAttribute('href'),mode==='market'?'../index.html':'market.html');
  assert.equal(x.d.querySelectorAll('.route-links a').length,4);
  x.click('[data-open="materials"]');assert.equal(x.d.querySelector('#detail-dialog').open,true);
  assert.match(x.d.querySelector('#calc-profit').textContent,/28/);

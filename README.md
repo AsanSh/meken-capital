@@ -17,9 +17,10 @@
 python3 -m http.server 4173 --bind 127.0.0.1 --directory site
 ```
 
-Откройте http://127.0.0.1:4173/index.html. Сборка и установка пакетов не нужны.
+Откройте единый портал: http://127.0.0.1:4173/concepts/market.html. Сборка и установка пакетов не нужны.
 
-- Главная и карта маршрутов: http://127.0.0.1:4173/index.html
+- Презентационная главная: http://127.0.0.1:4173/index.html
+- Единый портал: http://127.0.0.1:4173/concepts/market.html
 - Маркетплейс: http://127.0.0.1:4173/concepts/market.html
 - Инвестклуб: http://127.0.0.1:4173/login.html
 - Оборотный капитал: http://127.0.0.1:4173/concepts/flow.html
