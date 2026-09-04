@@ -1,52 +1,82 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Вход для участников — Meken Capital</title>
-<meta name="description" content="Кабинет участника фонда.">
-<meta property="og:title" content="Вход для участников — Meken Capital">
-<meta property="og:description" content="Кабинет участника фонда.">
-<meta property="og:site_name" content="Meken Capital">
-<link rel="canonical" href="https://meken.capital/login.html">
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<header><div class="wrap">
-  <a class="logo" href="index.html">Meken Capital<small>венчурный управляющий, Бишкек</small></a>
-  <nav><a href="index.html">Главная</a><a href="about.html">Управляющий</a><a href="principles.html">Принципы</a><a href="track-record.html">Закрытые сделки</a><a href="faq.html">Вопросы</a><a href="disclosure.html">Раскрытие</a></nav>
-  <div class="r"><a class="lang" href="en/index.html">EN</a><a class="btn light" href="login.html">Вход для участников</a><a class="btn" href="invite.html">Запросить приглашение</a></div>
-</div></header>
-<div class="notice"><div class="wrap">Участие доступно только квалифицированным инвесторам и бизнес-ангелам. Сайт не является публичной офертой и не содержит условий действующих сделок.</div></div>
-
-<div class="wrap pagehead"><h1>Вход для участников</h1><p>Кабинет доступен после подписания договора фонда.</p></div>
-<section><div class="wrap two">
-  <div class="form">
-    <label>E-mail, указанный в договоре</label><input class="in" placeholder="name@example.com">
-    <button class="btn" type="button">Получить код входа</button>
-    <div class="fine">Код придёт на e-mail и действует 10 минут. Паролей нет.</div>
-  </div>
-  <div class="prose">
-    <h3 style="margin-top:0">Что внутри кабинета</h3>
-    <ul>
-      <li>Действующие сделки: структура, документы, заключение шариатского совета, вызов капитала.</li>
-      <li>Ваш портфель по сделкам и стадиям.</li>
-      <li>Движение средств по каждой сделке — каждый платёж с назначением.</li>
-      <li>Ежемесячные отчёты по стройке, ежеквартальные отчёты фонда, годовой аудит.</li>
-      <li>Голосования: сделки со связанными компаниями, изменения договора.</li>
-      <li>Доска предложений для передачи доли другому участнику.</li>
-    </ul>
-    <p>Нет доступа? <a href="invite.html" style="text-decoration:underline">Запросите приглашение</a>.</p>
-  </div>
-</div></section>
-
-<footer><div class="wrap">
-  <div class="cols">
-    <div><b>Meken Capital</b>Венчурный управляющий. Партнёрское финансирование стройки, стройматериалов и строительных технологий в Бишкеке без ссудного процента.<br><br>capital@meken.capital</div>
-    <div><b>Разделы</b><a href="index.html">Главная</a><a href="about.html">Управляющий</a><a href="principles.html">Принципы</a><a href="track-record.html">Закрытые сделки</a><a href="faq.html">Вопросы</a><a href="disclosure.html">Раскрытие</a></div>
-    <div><b>Участникам</b><a href="invite.html">Запросить приглашение</a><a href="login.html">Вход</a><a href="disclosure.html">Правовая информация</a></div>
-  </div>
-  Информация на сайте носит справочный характер и не является рекламой венчурного фонда, публичной офертой или предложением инвестировать. Результаты завершённых сделок не являются обещанием дохода. Meken Capital входит в группу компаний Bishkek Properties; сделки с компаниями группы проводятся только с согласия участников фонда. © 2026
-</div></footer>
-</body></html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Вход в инвестклуб — Meken Capital</title>
+    <meta
+      name="description"
+      content="Закрытый кабинет участника Meken Capital."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="investor.css" />
+    <script src="investor-login.js" defer></script>
+  </head>
+  <body class="auth-page">
+    <a class="skip-link" href="#login-card">Перейти к форме</a>
+    <header class="routebar">
+      <a class="route-back" href="index.html">← Единый портал</a
+      ><a class="route-brand" href="index.html">MEKEN <span>CAPITAL</span></a>
+      <nav>
+        <a href="concepts/market.html">Маркетплейс</a
+        ><a class="active" href="login.html">Инвестклуб</a
+        ><a href="concepts/flow.html">Оборотный капитал</a
+        ><a href="faq.html">FAQ</a>
+      </nav>
+    </header>
+    <main class="auth-shell">
+      <section class="auth-story">
+        <span class="eyebrow">Закрытый контур</span>
+        <h1>Все сделки, документы и решения — в одном кабинете.</h1>
+        <p>
+          Войдите, чтобы увидеть портфель, открыть Data Room, проверить движение
+          капитала и проголосовать по вопросам своей сделки.
+        </p>
+        <ol>
+          <li><b>01</b> Изучите подходящие сделки</li>
+          <li><b>02</b> Проверьте документы и исламскую структуру</li>
+          <li><b>03</b> Следите за исполнением и решениями</li>
+        </ol>
+      </section>
+      <section class="auth-card" id="login-card">
+        <span class="eyebrow">Вход участника</span>
+        <h2>Добро пожаловать</h2>
+        <p>
+          Локальный прототип. Данные не отправляются и деньги не списываются.
+        </p>
+        <form id="investor-login-form">
+          <label
+            >Email<input
+              id="investor-email"
+              type="email"
+              value="investor@meke.capital"
+              autocomplete="username"
+              required /></label
+          ><label
+            >Пароль<input
+              id="investor-password"
+              type="password"
+              value="MekenInvestor!"
+              autocomplete="current-password"
+              required
+          /></label>
+          <p class="form-error" id="login-error" role="alert" hidden></p>
+          <button class="primary" type="submit">Войти в кабинет →</button>
+        </form>
+        <p class="test-note">
+          Тестовый доступ уже заполнен. Для реального запуска нужна серверная
+          авторизация.
+        </p>
+        <a class="text-link" href="invite.html"
+          >Нет приглашения? Оставить заявку</a
+        >
+      </section>
+    </main>
+  </body>
+</html>

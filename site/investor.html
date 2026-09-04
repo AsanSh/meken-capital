@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Кабинет инвестора — Meken Capital</title>
+    <meta
+      name="description"
+      content="Портфель, Data Room, движение капитала и голосования участника Meken Capital."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="investor.css" />
+    <script>
+      if (sessionStorage.getItem("meken-investor-auth") !== "ok")
+        location.replace("login.html");
+    </script>
+    <script src="investor.js" defer></script>
+  </head>
+  <body class="dashboard-page">
+    <a class="skip-link" href="#dashboard-main">Перейти к кабинету</a>
+    <header class="routebar">
+      <a class="route-back" href="index.html">← <span data-i18n="portal">Единый портал</span></a
+      ><a class="route-brand" href="index.html">MEKEN <span>CAPITAL</span></a>
+      <nav>
+        <a href="concepts/market.html" data-i18n="marketplace">Маркетплейс</a
+        ><a class="active" href="investor.html" data-i18n="investorClub">Инвестклуб</a
+        ><a href="concepts/flow.html" data-i18n="workingCapital">Оборотный капитал</a
+        ><a href="faq.html">FAQ</a>
+      </nav>
+      <div class="header-tools">
+        <button id="language-toggle" class="tool-button">EN</button
+        ><button id="currency-toggle" class="tool-button">USD</button
+        ><button
+          id="notification-button"
+          class="notice-button"
+          aria-expanded="false"
+        >
+          <span data-i18n="notifications">Уведомления</span> <b id="notification-count">4</b></button
+        ><button id="logout" class="tool-button" data-i18n="logout">Выйти</button>
+      </div>
+    </header>
+    <div class="dashboard-shell">
+      <aside class="sidebar">
+        <div class="member">
+          <span>AS</span>
+          <div>
+            <b>Асан Ш.</b><small data-i18n="verified">Профиль проверен</small>
+          </div>
+        </div>
+        <nav aria-label="Кабинет">
+          <button
+            class="side-link active"
+            data-view="overview"
+            data-i18n="overview"
+          >
+            Обзор</button
+          ><button
+            class="side-link"
+            data-view="portfolio"
+            data-i18n="portfolio"
+          >
+            Мои сделки</button
+          ><button class="side-link" data-view="matching" data-i18n="matching">
+            Подбор сделки</button
+          ><button class="side-link" data-view="dataroom">Data Room</button
+          ><button class="side-link" data-view="timeline" data-i18n="timeline">
+            Движение капитала</button
+          ><button class="side-link" data-view="voting" data-i18n="voting">
+            Голосования</button
+          ><button class="side-link" data-view="calendar" data-i18n="calendar">
+            Календарь</button
+          ><button class="side-link" data-view="settings" data-i18n="settings">
+            Настройки
+          </button>
+        </nav>
+        <div class="sharia-note">
+          <b>Sharia-first</b>
+          <p data-i18n="shariaNote">
+            Каждая сделка имеет отдельный актив, договор и проверку исламской
+            структуры.
+          </p>
+          <a href="faq.html" data-i18n="learn">Разобраться в инструментах →</a>
+        </div>
+      </aside>
+      <main id="dashboard-main">
+        <div class="mobile-section">
+          <label for="mobile-view" data-i18n="cabinetSection">Раздел кабинета</label
+          ><select id="mobile-view">
+            <option value="overview">Обзор</option>
+            <option value="portfolio">Мои сделки</option>
+            <option value="matching">Подбор сделки</option>
+            <option value="dataroom">Data Room</option>
+            <option value="timeline">Движение капитала</option>
+            <option value="voting">Голосования</option>
+            <option value="calendar">Календарь</option>
+            <option value="settings">Настройки</option>
+          </select>
+        </div>
+        <div id="view"></div>
+      </main>
+    </div>
+    <aside id="notification-panel" class="notification-panel" hidden>
+      <div class="panel-head">
+        <div>
+          <span class="eyebrow" data-i18n="center">Центр событий</span>
+          <h2 data-i18n="notifications">Уведомления</h2>
+        </div>
+        <button id="close-notifications">×</button>
+      </div>
+      <div id="notification-list"></div>
+      <button id="read-all" class="secondary" data-i18n="readAll">
+        Отметить всё прочитанным
+      </button>
+    </aside>
+    <div id="toast" class="toast" role="status" hidden></div>
+  </body>
+</html>
