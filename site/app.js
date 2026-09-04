@@ -47,6 +47,7 @@
   const result = form.querySelector('[data-result]');
   const flow = form.dataset.flow;
   const draftKey = 'meken-invitation-draft-v1';
+  const planKey = 'meken-plan-handoff-v1';
   const controls = [...form.querySelectorAll('input, textarea, select')];
   const message = (text, error = false) => {
     feedback.textContent = text; feedback.hidden = false;
@@ -84,6 +85,15 @@
         }
       }
       sessionStorage.removeItem(draftKey);
+    } catch { /* Storage may be unavailable; the form still works. */ }
+    try {
+      const plan = sessionStorage.getItem(planKey);
+      const interest = form.elements.namedItem('interest');
+      if (plan && interest) {
+        interest.value = plan.slice(0, 1000);
+        sessionStorage.removeItem(planKey);
+        message('Выбранные проекты перенесены в поле «Что хотите обсудить». Проверьте текст перед отправкой.');
+      }
     } catch { /* Storage may be unavailable; the form still works. */ }
   }
   form.addEventListener('submit', event => {
