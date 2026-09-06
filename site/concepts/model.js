@@ -31,7 +31,11 @@
     const investorPool=net>0?net*share:net;
     const managerPool=net>0?net*(1-share):0;
     const profit=amount/project.capital*investorPool;
-    return {revenue,gross,net,investorPool,managerPool,profit,rate:investorPool/project.capital*100,total:project.recurring?null:amount+profit};
+    const rate=investorPool/project.capital*100;
+    // rate — результат за цикл проекта. annualRate приводит разные сроки к общей базе,
+    // иначе 5,6% за 4 мес. и 16,8% за 24 мес. выглядят сравнимыми, хотя это 16,8% и 8,4% годовых.
+    const annualRate=rate*12/project.months;
+    return {revenue,gross,net,investorPool,managerPool,profit,rate,annualRate,total:project.recurring?null:amount+profit};
   }
   root.MekenPlatform={projects:Object.freeze(projects),opportunities:Object.freeze(opportunities),economics};
 })(typeof window==='object'?window:globalThis);
