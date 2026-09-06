@@ -17,3 +17,26 @@ body.flow{--bg:#f1f5f5;--surface:#fff;--ink:#113c3d;--muted:#647b7d;--line:#d4e1
 .top{height:auto;min-height:86px;gap:18px;padding-block:12px}.portal-back{font-size:12px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--muted);white-space:nowrap}.top .route-links{margin-left:0;gap:5px}.route-links a{font-size:12px;color:var(--muted);padding:9px;border-radius:8px;white-space:nowrap}.route-links a.active,.route-links a:hover{background:var(--soft);color:var(--accent)}.top .view-links{margin-left:auto}.top .avatar{text-decoration:none}
 @media(max-width:900px){.top .route-links{order:3;width:100%;overflow:auto}.top .view-links{order:4;width:100%;overflow:auto;margin-left:0}}
 @media(max-width:540px){.top nav{justify-content:flex-start!important;gap:5px!important}.top .brand{font-size:18px}.route-links a{font-size:11px;padding:7px}}
+
+/* One product shell: modes change the workspace, never the brand or navigation. */
+body.club,body.flow{--bg:#f5f7fb;--surface:#fff;--ink:#111b2e;--muted:#657084;--line:#dde3ec;--accent:#2959e5;--soft:#eaf0ff;--positive:#187c59;--radius:16px;color-scheme:light}
+.demo-bar{background:#111b2e!important;color:#fff!important}
+.top{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96)!important;box-shadow:0 8px 30px rgba(26,43,77,.05);backdrop-filter:blur(16px)}
+.top .route-links{padding:4px;background:var(--bg);border:1px solid var(--line);border-radius:11px}
+.route-links a{padding:9px 12px}.route-links a.active{background:var(--surface);box-shadow:0 2px 8px rgba(24,49,103,.08)}
+.view-links{border-left:1px solid var(--line);padding-left:14px}.nav-button.active{font-weight:600}
+.club .btn,.flow .btn{color:#fff}.club .btn.secondary,.flow .btn.secondary{color:var(--ink)}
+.club .intro,.flow .intro{margin-bottom:28px}.club .intro h1,.flow .intro h1{font-size:clamp(30px,3.5vw,48px)}
+.club-feature{background:var(--surface);border-color:var(--line);border-radius:var(--radius)}
+.club-feature img{opacity:.14}.club-feature h2{color:var(--ink)}.club-feature p{color:var(--muted)}
+.club-feature .badge{background:var(--soft);color:var(--accent)}.club-feature .feature-numbers strong{color:var(--accent)}.club-feature .feature-numbers small{color:var(--muted)}
+.club-callout,.club .deal-list{border-radius:var(--radius)}.club .calculator{background:var(--bg)}.club .compare-tray{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.flow .brand span{color:var(--accent)}.flow-composer{background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:0 16px 40px rgba(24,49,103,.08)}
+.flow-composer p,.flow-composer .calc-caption,.flow-composer label,.flow-composer .pool-breakdown{color:var(--muted)}.flow-composer .label,.flow-composer .calc-value{color:var(--accent)}
+.flow-composer .field input,.flow-composer .share-control input{background:var(--bg);border-color:var(--line);color:var(--ink)}.flow-composer .share-control{border-color:var(--line)}
+.flow-composer .btn{background:var(--accent);color:#fff}.flow-composer .btn.secondary{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.content-panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px}.content-panel h2{margin-bottom:18px}.content-panel p{color:var(--muted)}
+.faq-grid,.platform-story{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.content-panel details{padding:16px 0;border-top:1px solid var(--line)}.content-panel summary{cursor:pointer;font-weight:600}.content-panel details p{margin-top:10px;font-size:14px}.inline-link{display:inline-block;margin-top:20px;color:var(--accent);font-weight:600}
+.story-number{display:block;margin-bottom:36px;color:var(--accent);font-size:13px;font-weight:600}.platform-story .content-panel{display:flex;flex-direction:column;min-height:300px}.platform-story .content-panel p{margin:14px 0 28px}.platform-story .btn{margin-top:auto}.principle-strip{display:grid;grid-template-columns:1.15fr .85fr;gap:50px;align-items:end;margin-top:18px}.principle-strip .label{display:block}.principle-strip h2{margin:0}.principle-strip>p{font-size:15px}
+@media(max-width:1180px){.top{flex-wrap:wrap}.top .view-links{order:3;width:100%;border-left:0;border-top:1px solid var(--line);padding:8px 0 0;overflow:auto}.top .avatar{margin-left:auto}}
+@media(max-width:800px){.faq-grid,.platform-story{grid-template-columns:1fr}.platform-story .content-panel{min-height:0}.principle-strip{grid-template-columns:1fr;gap:20px}}

@@ -1,0 +1,12 @@
+import { mkdirSync, cpSync, writeFileSync, readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+for(const path of ['server.mjs','site/portal.js'])execFileSync(process.execPath,['--check',path]);
+mkdirSync('dist/meken',{recursive:true});
+for(const p of ['server.mjs','package.json','package-lock.json','Dockerfile','compose.yaml','Caddyfile','.env.example','.dockerignore','.gitignore','README.md'])cpSync(p,'dist/meken/'+p);
+for(const d of ['scripts','docs','lib'])cpSync(d,'dist/meken/'+d,{recursive:true});
+mkdirSync('dist/meken/tests',{recursive:true});
+for(const p of ['rates.test.mjs','server.test.mjs','portal.test.cjs','platform-model.test.mjs'])cpSync('tests/'+p,'dist/meken/tests/'+p);
+mkdirSync('dist/meken/site/concepts/assets',{recursive:true});
+for(const p of ['app.html','portal.js','portal.css','favicon.svg','robots.txt','sitemap.xml','concepts/model.js','concepts/assets/house.webp','concepts/assets/apartment.webp','concepts/assets/materials.webp'])cpSync('site/'+p,'dist/meken/site/'+p);
+writeFileSync('dist/meken/BUILD.json',JSON.stringify({built:new Date().toISOString(),version:JSON.parse(readFileSync('package.json')).version,domain:'meken.im',runtime:'Node.js 24.12+',entry:'npm start'},null,2));
+console.log('Prepared dist/meken. The package excludes database, credentials and legacy prototype pages.');

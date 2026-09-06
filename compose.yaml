@@ -1,0 +1,32 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      APP_ORIGIN: https://meken.im
+      HOST: 0.0.0.0
+      DATA_DIR: /app/data
+    volumes:
+      - meken-data:/app/data
+      - meken-backups:/app/backups
+    expose:
+      - '4173'
+  web:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+volumes:
+  meken-data:
+  meken-backups:
+  caddy-data:
+  caddy-config:

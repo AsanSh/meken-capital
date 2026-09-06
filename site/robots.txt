@@ -1,7 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /login.html
-Disallow: /investor.html
-Disallow: /admin.html
-Disallow: /admin-login.html
-Sitemap: https://meken.capital/sitemap.xml
+Disallow: /api/
+Sitemap: https://meken.im/sitemap.xml

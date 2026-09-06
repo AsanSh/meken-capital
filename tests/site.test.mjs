@@ -63,3 +63,24 @@ test('all first-party scripts parse', () => {
     assert.doesNotThrow(() => new vm.Script(readFileSync(file, 'utf8')), file);
   }
 });
+
+test('public information pages always return to the unified portal', () => {
+  const pages = ['about.html', 'principles.html', 'track-record.html', 'faq.html', 'disclosure.html', 'invite.html'];
+  for (const page of pages) {
+    const html = readFileSync(join(root, page), 'utf8');
+    assert.match(html, /class="portal-return" href="concepts\/market\.html">← Единый портал<\/a>/, page);
+  }
+});
+
+test('presentation and English pages expose the unified portal', () => {
+  const homepage = readFileSync(join(root, 'index.html'), 'utf8');
+  assert.match(homepage, /href="concepts\/market\.html">Единый портал<\/a>/);
+  assert.match(homepage, /http-equiv="refresh" content="0; url=concepts\/market\.html#market"/);
+  assert.match(readFileSync(join(root, 'en/index.html'), 'utf8'), /href="\.\.\/concepts\/market\.html">← Unified portal<\/a>/);
+});
+
+test('legacy information pages use the light shell while the presentation keeps its experience theme', () => {
+  const css = readFileSync(join(root, 'styles.css'), 'utf8');
+  assert.match(css, /body:not\(\.experience\)/);
+  assert.match(readFileSync(join(root, 'index.html'), 'utf8'), /<body class="experience">/);
+});
