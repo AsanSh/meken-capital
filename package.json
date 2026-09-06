@@ -1,10 +1,16 @@
 {
   "name": "meken-capital-portal",
-  "version": "0.1.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "node --test tests/site.test.mjs tests/platform-model.test.mjs tests/platform-ui.cjs tests/admin-ui.cjs tests/investor-ui.cjs"
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "setup": "node scripts/setup.mjs",
+    "backup": "node --env-file-if-exists=.env scripts/backup.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/server.test.mjs tests/portal.test.cjs tests/platform-model.test.mjs",
+    "test:legacy": "node --test tests/site.test.mjs tests/platform-model.test.mjs tests/platform-ui.cjs tests/admin-ui.cjs tests/investor-ui.cjs"
   },
+  "engines": { "node": ">=24.12.0" },
   "devDependencies": {
     "jsdom": "^26.1.0"
   }

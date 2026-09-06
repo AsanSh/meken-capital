@@ -1,0 +1,7 @@
+meken.im {
+  encode zstd gzip
+  reverse_proxy app:4173
+}
+www.meken.im {
+  redir https://meken.im{uri} permanent
+}
