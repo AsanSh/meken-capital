@@ -4,6 +4,7 @@ import { randomBytes, scryptSync, timingSafeEqual, createHash } from 'node:crypt
 import { mkdirSync, readFileSync, existsSync, chmodSync } from 'node:fs';
 import { resolve, dirname, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRateService } from './lib/rates.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const production = process.env.NODE_ENV === 'production';
@@ -26,6 +27,10 @@ CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS audit (id INTEGER PRIMARY KEY, actor TEXT NOT NULL, action TEXT NOT NULL, target TEXT NOT NULL, created TEXT NOT NULL);
 `);
 const now = () => new Date().toISOString();
+const getRates = createRateService({
+  read: () => JSON.parse(db.prepare("SELECT value FROM settings WHERE key='nbkr'").get()?.value || 'null'),
+  write: value => db.prepare("INSERT INTO settings VALUES('nbkr',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(JSON.stringify(value))
+});
 const id = () => randomBytes(16).toString('hex');
 const hash = v => createHash('sha256').update(v).digest('hex');
 const passwordHash = p => { const salt = id(); return salt + ':' + scryptSync(p, salt, 64).toString('hex'); };
@@ -144,7 +149,7 @@ async function api(req,res,url) {
     if(db.prepare('SELECT answer FROM votes WHERE poll_id=? AND user_id=?').get(poll.id,u.id))fail(409,'Голос уже принят');
     db.prepare('INSERT INTO votes VALUES(?,?,?,?)').run(poll.id,u.id,b.answer,now());audit(u,'vote',poll.id);return json(res,{ok:true});
   }
-  if(p==='/api/settings'&&method==='GET')return json(res,JSON.parse(db.prepare("SELECT value FROM settings WHERE key='public'").get()?.value||'{}'));
+  if(p==='/api/settings'&&method==='GET')return json(res,await getRates());
   if(p.startsWith('/api/admin/')) {
     requireAdmin(u);
     if(p==='/api/admin/overview'&&method==='GET')return json(res,{deals:db.prepare('SELECT * FROM deals').all().map(dealOf),applications:db.prepare('SELECT a.*,u.name,u.email FROM applications a JOIN users u ON u.id=a.user_id ORDER BY a.created DESC').all(),users:db.prepare('SELECT id,name,email,role,created FROM users').all(),audit:db.prepare('SELECT * FROM audit ORDER BY id DESC LIMIT 100').all(),polls:db.prepare('SELECT p.*, (SELECT count(*) FROM votes v WHERE v.poll_id=p.id) AS votes FROM polls p').all()});
@@ -177,7 +182,7 @@ async function api(req,res,url) {
       const pid=id();db.prepare('INSERT INTO polls VALUES(?,?,?,?)').run(pid,b.dealId,question,dt.toISOString());audit(u,'poll-create',pid);return json(res,{ok:true});
     }
     if(p==='/api/admin/settings'&&method==='POST') {
-      const b=await body(req),value={usdKgs:number(b.usdKgs,1,1000),rateDate:now()};db.prepare("INSERT INTO settings VALUES('public',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(JSON.stringify(value));audit(u,'exchange-rate','public');return json(res,{ok:true});
+      fail(405,'Курс обновляется автоматически из НБКР');
     }
   }
   fail(404,'Запрос не найден');

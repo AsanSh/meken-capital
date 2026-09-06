@@ -7,7 +7,7 @@
     "setup": "node scripts/setup.mjs",
     "backup": "node --env-file-if-exists=.env scripts/backup.mjs",
     "build": "node scripts/build.mjs",
-    "test": "node --test tests/server.test.mjs tests/portal.test.cjs tests/platform-model.test.mjs",
+    "test": "node --test tests/rates.test.mjs tests/server.test.mjs tests/portal.test.cjs tests/platform-model.test.mjs",
     "test:legacy": "node --test tests/site.test.mjs tests/platform-model.test.mjs tests/platform-ui.cjs tests/admin-ui.cjs tests/investor-ui.cjs"
   },
   "engines": { "node": ">=24.12.0" },

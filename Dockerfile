@@ -3,6 +3,7 @@ WORKDIR /app
 COPY --chown=node:node server.mjs package.json ./
 COPY --chown=node:node site ./site
 COPY --chown=node:node scripts ./scripts
+COPY --chown=node:node lib ./lib
 RUN mkdir -p /app/data /app/backups && chown -R node:node /app/data /app/backups
 USER node
 ENV HOST=0.0.0.0 PORT=4173 DATA_DIR=/app/data NODE_ENV=production
