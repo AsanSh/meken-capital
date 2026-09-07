@@ -1,5 +1,26 @@
 # Design QA — Meken Capital
 
+## Current update — 2026-09-07: warm palette and project comparison
+
+final result: blocked
+
+- Scope: selected first palette, existing unified portal; cycle-first project metrics, modal return, comparison with downside/risks/exit. Existing production functionality and approved flag wordmark retained.
+- Source visual truth: `/Users/asans/.codex/generated_images/01a06734-37d3-77e2-87db-3c486ec3f3ed/exec-620a8403-c9ba-4184-bba3-ab38922ac0db.png`.
+- Implementation: `http://127.0.0.1:4173/#market`; new browser screenshot unavailable. Viewport and density comparison not performed.
+- Blocker: computer-use tool reports Mac locked and automatic unlock unavailable. Desktop/mobile rendering, full-view and focused comparison, and console review remain unverified. No visual pass claimed; no deployment of this update performed.
+- Typography/layout: existing responsive shell retained; card actions aligned using flex. Await visual verification of wrapping and comparison-table scrolling.
+- Colors: warm ivory `#f8f5f0`, white surfaces, deep red `#b82436`, muted gold `#966f32`; semantic green/red for calculation outcomes. Await visual contrast and state inspection.
+- Images: approved existing raster logo and project photos reused; detail view labels photos as illustrations. No new raster artwork.
+- Copy: primary forecast explicitly covers the project cycle (12 months of rent separately from holding horizon); annual equivalent secondary. No unverified approvals or guaranteed performance added.
+- Verification completed: 18/18 automated tests, build and `git diff --check` pass. Added regression coverage for cycle-first metrics, downside loss display, preserving filters on project return, and comparison fields/rental horizon.
+- Next: unlock Mac, inspect desktop/mobile and modal/comparison, capture and compare reference, fix findings, then publish only after visual gate passes.
+
+### Publication exception authorized by the user
+
+On 2026-09-07 the user explicitly requested continuing without unlocking the Mac. The update was published via the existing Vercel CLI workflow as deployment `dpl_2nzM1QNAoX1ARadW7GgxhqZf98SN`, aliased to `https://meken.im`. Automated tests: 18/18; local and Vercel builds passed. Visual QA remains blocked, not passed: no new browser screenshot, responsive inspection or browser-console verification is claimed. No GitHub merge/push was performed during this update. The next visual inspection remains pending but no longer blocks this user-authorized publication.
+
+## Historical review (different design; not evidence for current update)
+
 Date: 2026-09-03
 
 final result: passed

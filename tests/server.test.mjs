@@ -11,7 +11,7 @@ test('server: persistent accounts, publication gates, private documents, decisio
  const probe=net.createServer().listen(0,'127.0.0.1');await once(probe,'listening');const port=probe.address().port;await new Promise(r=>probe.close(r));
  const origin=`http://127.0.0.1:${port}`,dir=mkdtempSync(join(tmpdir(),'meken-test-'));
  const env={...process.env,NODE_ENV:'test',APP_ORIGIN:origin,PORT:String(port),HOST:'127.0.0.1',DATA_DIR:dir,ADMIN_EMAIL:'owner@example.com',ADMIN_PASSWORD:'Strong-test-password-42'};
- let proc;async function start(){proc=spawn(process.execPath,['server.mjs'],{env,stdio:['ignore','pipe','pipe']});await new Promise((resolve,reject)=>{proc.stdout.on('data',x=>{if(x.toString().includes('Meken ready'))resolve();});proc.on('exit',code=>reject(new Error('Server stopped: '+code)));});}
+ let proc;async function start(){proc=spawn(process.execPath,['server.mjs'],{env,stdio:['ignore','pipe','pipe']});await new Promise((resolve,reject)=>{proc.stdout.on('data',x=>{if(x.toString().includes('Meken ready'))resolve();});let stderr='';proc.stderr.on('data',x=>{stderr+=x;});proc.on('exit',code=>reject(new Error('Server stopped: '+code+' '+stderr.replace(/postgres(?:ql)?:\/\/[^\s]+/g,'[database URL hidden]'))));});}
  async function stop(){const p=proc;if(!p||p.exitCode!==null)return;const exited=once(p,'exit');p.kill('SIGTERM');await exited;}
  t.after(async()=>{await stop();rmSync(dir,{recursive:true,force:true});});await start();
  async function req(path,method='GET',body,cookie='',extra={}){const r=await fetch(origin+'/api/'+path,{method,headers:{Origin:origin,'X-Meken-Request':'1','Content-Type':'application/json',Cookie:cookie,...extra},body:body===undefined?undefined:JSON.stringify(body)});const data=await r.json();return {status:r.status,data,cookie:r.headers.get('set-cookie')?.split(';')[0],headers:r.headers};}
@@ -56,4 +56,6 @@ test('server: persistent accounts, publication gates, private documents, decisio
  assert.equal((await req('password','POST',{current:'Investor-test-secret-42',password:'Changed-investor-secret-42'},investor)).status,200);
  assert.equal((await req('me','GET',undefined,investor)).data.user,null);
  await req('logout','POST',{},admin);assert.equal((await req('admin/overview','GET',undefined,admin)).status,401);
+ const parallel=await Promise.all(Array.from({length:4},(_,i)=>req('login','POST',{email:'missing-'+i+'@example.com',password:'Wrong-password-42'})));
+ assert.deepEqual(parallel.map(r=>r.status),[401,401,401,401]);
 });
