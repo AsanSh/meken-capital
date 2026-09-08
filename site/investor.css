@@ -702,3 +702,130 @@ select:focus-visible {
     font-size: 46px;
   }
 }
+
+/* Project selection and the declared-interest questionnaire. */
+.match-form .wide {
+  grid-column: 1 / -1;
+}
+.match-form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 7px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 9px;
+  padding: 12px;
+  font: inherit;
+  font-size: 15px;
+  resize: vertical;
+}
+.match-form .chk {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  line-height: 1.5;
+}
+.match-form .chk input {
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  margin-top: 2px;
+  flex: none;
+  accent-color: var(--green);
+}
+.match-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+.match-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.match-card.picked {
+  border-color: var(--green);
+  box-shadow: 0 0 0 1px var(--green) inset;
+}
+.match-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.match-head b {
+  font-size: 16px;
+  line-height: 1.35;
+}
+.match-meta,
+.match-why {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0;
+}
+.match-metrics {
+  display: flex;
+  gap: 20px;
+}
+.match-metrics strong {
+  display: block;
+  font-size: 20px;
+  font-weight: 600;
+}
+.match-metrics small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.match-declared {
+  margin: 0;
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 600;
+}
+.match-card .secondary {
+  margin-top: auto;
+}
+.interest-card {
+  margin-top: 18px;
+  border: 2px solid var(--green);
+}
+.interest-lead {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 8px 0 18px;
+}
+.interest-letter {
+  margin-top: 18px;
+}
+.interest-letter textarea {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  font: inherit;
+  font-size: 13px;
+  background: #fff;
+  resize: vertical;
+}
+.interest-letter .vote-actions {
+  margin-top: 14px;
+}
+.interest-letter .vote-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+@media (max-width: 700px) {
+  .match-form {
+    grid-template-columns: 1fr;
+  }
+}

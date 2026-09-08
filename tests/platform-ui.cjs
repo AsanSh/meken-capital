@@ -9,9 +9,9 @@ function boot(mode,stored){
  w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};
  w.HTMLDialogElement.prototype.close=function(){this.open=false;};
  if(stored)w.sessionStorage.setItem('meken-platform-draft-v1',JSON.stringify(stored));
- w.eval(fs.readFileSync(root+'model.js','utf8'));w.eval(fs.readFileSync(root+'platform.js','utf8'));
+ w.eval(fs.readFileSync(root+'../interest.js','utf8'));w.eval(fs.readFileSync(root+'model.js','utf8'));w.eval(fs.readFileSync(root+'platform.js','utf8'));
  const d=w.document;
- return {dom,w,d,click:s=>{assert.ok(d.querySelector(s),'missing '+s);d.querySelector(s).click();},input:(s,v)=>{const el=d.querySelector(s);el.value=v;el.dispatchEvent(new w.Event('input',{bubbles:true}));}};
+ return {dom,w,d,click:s=>{assert.ok(d.querySelector(s),'missing '+s);d.querySelector(s).click();},input:(s,v)=>{const el=d.querySelector(s);el.value=v;el.dispatchEvent(new w.Event('input',{bubbles:true}));},set:(s,v)=>{const el=d.querySelector(s);assert.ok(el,'missing '+s);el.value=v;el.dispatchEvent(new w.Event('change',{bubbles:true}));},submit:s=>{d.querySelector(s).dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));}};
 }
 for(const mode of ['market','club','flow'])test(mode+' loads working surfaces and opens a project',()=>{
  const x=boot(mode);assert.ok(x.d.querySelector('h1').textContent.length>5);
@@ -58,4 +58,76 @@ test('allocation limit cannot be exceeded by repeated additions',()=>{
  x.input('#amount','200000');assert.equal(x.d.querySelector('#add-draft').disabled,true);
  x.input('#amount','100000');assert.equal(x.d.querySelector('#add-draft').disabled,false);
  x.dom.window.close();
+});
+
+function declare(x,over){
+ const set=(id,v)=>{const el=x.d.querySelector(id);el.value=v;};
+ set('#interest-window',over&&'window' in over?over.window:'3d');
+ set('#interest-name',over&&'name' in over?over.name:'A. Sadykov');
+ set('#interest-contact',over&&'contact' in over?over.contact:'a@example.com');
+ if(over&&'amount' in over)set('#interest-amount',over.amount);
+ const consents=over&&over.consents===false?false:true;
+ x.d.querySelector('[data-consent="0"]').checked=consents;
+ x.d.querySelector('[data-consent="1"]').checked=consents;
+ x.submit('#interest-form');
+}
+test('declaring interest requires a project, an amount, a window and both consents',()=>{
+ const x=boot('market');
+ x.click('[data-interest="house"]');
+ assert.equal(x.d.querySelector('#interest-dialog').open,true);
+ assert.equal(x.d.querySelector('#interest-project').value,'house');
+ assert.equal(x.d.querySelectorAll('#interest-project option').length,6);
+ declare(x,{window:'',consents:false});
+ assert.equal(x.d.querySelector('#interest-error').hidden,false);
+ declare(x,{consents:false});
+ assert.match(x.d.querySelector('#interest-error').textContent,/Подтвердите/);
+ declare(x,{amount:1000});
+ assert.match(x.d.querySelector('#interest-error').textContent,/диапазоне/);
+ declare(x,{amount:900000});
+ assert.equal(x.d.querySelector('#interest-error').hidden,true);
+ assert.equal(x.d.querySelector('#interest-result').hidden,false);
+ assert.match(x.d.querySelector('#interest-letter').value,/Дом на юге города/);
+ assert.match(x.d.querySelector('#interest-letter').value,/в течение 3 дней/);
+ assert.equal(x.d.querySelector('#interest-count').textContent,'1');
+ x.dom.window.close();
+});
+test('the project can be switched inside the questionnaire and bounds follow it',()=>{
+ const x=boot('market');
+ x.click('[data-interest="materials"]');
+ assert.equal(x.d.querySelector('#interest-amount').max,'2000000');
+ x.set('#interest-project','offplan');
+ assert.equal(x.d.querySelector('#interest-amount').max,'5000000');
+ assert.match(x.d.querySelector('#interest-range').textContent,/250\s000/);
+ declare(x,{amount:4000000,window:'14d'});
+ assert.equal(x.d.querySelector('#interest-result').hidden,false);
+ assert.match(x.d.querySelector('#interest-letter').value,/От котлована до ключей/);
+ x.dom.window.close();
+});
+test('declared interest is listed, totalled per project and can be dropped',()=>{
+ const x=boot('market');
+ x.click('[data-interest="materials"]');declare(x,{amount:500000,window:'3d'});
+ x.click('#interest-more');
+ x.set('#interest-project','rent');
+ declare(x,{amount:1000000,window:'7d'});
+ x.click('[data-view="interest"]');
+ const view=x.d.querySelector('#interest-view');
+ assert.match(view.textContent,/1\s500\s000/);
+ assert.equal(x.d.querySelectorAll('#interest-view tbody tr').length,2);
+ assert.equal(x.d.querySelectorAll('.interest-groups article').length,2);
+ assert.ok(x.d.querySelector('#interest-send-all').href.startsWith('mailto:partner@meken.capital'));
+ x.click('#interest-view tbody tr .remove');
+ assert.equal(x.d.querySelectorAll('#interest-view tbody tr').length,1);
+ x.click('#interest-clear');
+ assert.match(x.d.querySelector('#interest-view').textContent,/Интерес пока не заявлен/);
+ assert.equal(x.d.querySelector('#interest-count').textContent,'0');
+ x.dom.window.close();
+});
+test('every surface offers an explicit project pick',()=>{
+ for(const mode of ['market','club','flow']){
+  const x=boot(mode);
+  assert.ok(x.d.querySelector('[data-interest]'),mode+' has no project pick');
+  x.click('[data-view="interest"]');
+  assert.match(x.d.querySelector('#interest-view').textContent,/по первому требованию/);
+  x.dom.window.close();
+ }
 });
