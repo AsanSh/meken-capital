@@ -17,3 +17,27 @@ body.flow{--bg:#f1f5f5;--surface:#fff;--ink:#113c3d;--muted:#647b7d;--line:#d4e1
 .top{height:auto;min-height:86px;gap:18px;padding-block:12px}.portal-back{font-size:12px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--muted);white-space:nowrap}.top .route-links{margin-left:0;gap:5px}.route-links a{font-size:12px;color:var(--muted);padding:9px;border-radius:8px;white-space:nowrap}.route-links a.active,.route-links a:hover{background:var(--soft);color:var(--accent)}.top .view-links{margin-left:auto}.top .avatar{text-decoration:none}
 @media(max-width:900px){.top .route-links{order:3;width:100%;overflow:auto}.top .view-links{order:4;width:100%;overflow:auto;margin-left:0}}
 @media(max-width:540px){.top nav{justify-content:flex-start!important;gap:5px!important}.top .brand{font-size:18px}.route-links a{font-size:11px;padding:7px}}
+/* Declared interest: project pick, amount and readiness window. */
+.card-actions,.row-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.card-actions .btn,.row-actions .btn{white-space:nowrap}
+.interest-flag{margin:12px 0 0;padding:9px 11px;border-radius:8px;background:var(--soft);color:var(--accent);font-size:12px;line-height:1.45}
+.interest-form{max-width:640px}
+.interest-form .req{color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-left:6px}
+.interest-form textarea{display:block;width:100%;margin-top:7px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px;resize:vertical}
+.interest-form .btn{width:100%;margin-top:8px}
+.interest-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:18px 0;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.interest-summary span{display:block;font-size:11px;color:var(--muted);margin-bottom:5px}
+.interest-summary b{font-size:14px;font-weight:500;line-height:1.4}
+.chk{display:flex;gap:10px;align-items:flex-start;margin:14px 0;font-size:13px;color:var(--muted);line-height:1.5}
+.chk input{margin-top:3px;width:18px;height:18px;flex:none;accent-color:var(--accent)}
+.interest-result h3{font-size:22px;margin-bottom:8px}
+.interest-result textarea{display:block;width:100%;margin-top:7px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
+.interest-result .row-actions{margin-top:14px}
+.interest-heading{margin:34px 0 14px;font-size:20px}
+.interest-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.interest-groups article{border:1px solid var(--line);border-radius:12px;padding:18px;background:var(--surface)}
+.interest-groups b{display:block;font-weight:500;font-size:14px;margin-bottom:10px}
+.interest-groups strong{display:block;font-size:24px;font-weight:500;letter-spacing:-.03em;color:var(--accent)}
+.interest-groups span{display:block;font-size:12px;color:var(--muted);margin-top:6px}
+.interest-actions{margin-top:26px}
+@media(max-width:800px){.card-actions,.row-actions{width:100%}.card-actions .btn,.row-actions .btn{flex:1}.interest-summary{padding:14px}}
