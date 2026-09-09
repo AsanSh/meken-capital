@@ -5,7 +5,7 @@
 (function (root) {
   'use strict';
   const KEY = 'meken-interest-v1';
-  const MAILBOX = 'partner@meken.capital';
+  const MAILBOX = 'partner@meken.im';
   const LIMIT = 60;
   const MAX_AMOUNT = 1000000000;
   const WINDOWS = [

@@ -88,7 +88,7 @@ test('the prepared letter states the project, the amount and the on-demand windo
   assert.match(body, /500\s000\sсом/);
   assert.match(body, /в течение 3 дней после открытия сделки/);
   assert.match(body, /не является переводом средств/);
-  assert.ok(api.mailto(body).startsWith('mailto:partner@meken.capital?subject='));
+  assert.ok(api.mailto(body).startsWith('mailto:partner@meken.im?subject='));
   assert.match(api.letterAll(), /Итого: 500\s000\sсом/);
   assert.match(api.csv(), /"Инвестор";"Контакт";"Проект"/);
 });

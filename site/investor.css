@@ -1,12 +1,12 @@
 :root {
-  --bg: #f4f6f2;
+  --bg: #f5f7fb;
   --paper: #fff;
-  --ink: #10241d;
-  --muted: #64716b;
-  --line: #dce3dd;
-  --green: #0f6b4f;
-  --lime: #dff56c;
-  --blue: #3159d9;
+  --ink: #111b2e;
+  --muted: #657084;
+  --line: #dde3ec;
+  --green: #2959e5;
+  --lime: #eaf0ff;
+  --blue: #2959e5;
   --danger: #a94537;
   color-scheme: light;
 }
@@ -61,16 +61,19 @@ select:focus-visible {
   display: flex;
   align-items: center;
   gap: 22px;
-  background: #0e201a;
-  color: #fff;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 8px 30px rgba(26, 43, 77, 0.05);
+  backdrop-filter: blur(16px);
   position: sticky;
   top: 0;
   z-index: 20;
 }
 .route-back {
   font-size: 12px;
-  color: #b8c9c0;
-  border: 1px solid #365047;
+  color: var(--muted);
+  border: 1px solid var(--line);
   padding: 8px 10px;
   border-radius: 8px;
 }
@@ -80,7 +83,7 @@ select:focus-visible {
   white-space: nowrap;
 }
 .route-brand span {
-  color: var(--lime);
+  color: var(--blue);
 }
 .routebar nav {
   display: flex;
@@ -91,12 +94,12 @@ select:focus-visible {
   padding: 9px;
   border-radius: 8px;
   font-size: 13px;
-  color: #b8c9c0;
+  color: var(--muted);
 }
 .routebar nav a:hover,
 .routebar nav a.active {
-  background: #213b32;
-  color: #fff;
+  background: var(--lime);
+  color: var(--blue);
 }
 .header-tools {
   display: flex;
@@ -104,16 +107,16 @@ select:focus-visible {
 }
 .tool-button,
 .notice-button {
-  border: 1px solid #365047;
+  border: 1px solid var(--line);
   background: transparent;
-  color: #fff;
+  color: var(--ink);
   border-radius: 8px;
   padding: 8px 10px;
   min-height: 40px;
 }
 .notice-button b {
-  background: var(--lime);
-  color: #10241d;
+  background: var(--blue);
+  color: #fff;
   border-radius: 20px;
   padding: 2px 6px;
   margin-left: 4px;
@@ -232,7 +235,7 @@ select:focus-visible {
   padding: 28px 20px;
   display: flex;
   flex-direction: column;
-  background: #eef2ed;
+  background: #f0f3f9;
 }
 .member {
   display: flex;
@@ -278,7 +281,7 @@ select:focus-visible {
 }
 .sharia-note {
   margin-top: auto;
-  background: #dfeadf;
+  background: var(--lime);
   border-radius: 14px;
   padding: 17px;
   font-size: 12px;

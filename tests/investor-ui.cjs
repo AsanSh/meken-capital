@@ -163,7 +163,7 @@ test("a recorded declaration is totalled, listed, mailed and removable", () => {
   assert.equal(x.d.querySelector("#interest-error"), null);
   assert.match(x.d.querySelector("#interest-letter").value, /Арматура/);
   assert.match(x.d.querySelector("#interest-letter").value, /в течение недели/);
-  assert.ok(x.d.querySelector("#interest-mail").href.startsWith("mailto:partner@meken.capital"));
+  assert.ok(x.d.querySelector("#interest-mail").href.startsWith("mailto:partner@meken.im"));
   assert.match(x.d.querySelector("#view").textContent, /Мой заявленный интерес/);
   assert.equal(x.d.querySelectorAll(".deal-table tbody tr").length, 1);
   x.click('[data-view="overview"]');

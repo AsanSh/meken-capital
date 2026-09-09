@@ -49,9 +49,15 @@ test('all local page links, assets and fragment targets resolve', () => {
       const value = match[1];
       if (/^(https?:|mailto:|tel:|data:)/.test(value)) continue;
       const [path, hash] = value.split('#');
-      const target = path ? resolve(dirname(file), path.split('?')[0]) : file;
+      // The server serves the site directory as the web root, so an absolute
+      // reference such as /portal.css resolves against site/, not the filesystem.
+      const target = path
+        ? resolve(path.startsWith('/') ? root : dirname(file), '.' + (path.startsWith('/') ? path : '/' + path).split('?')[0])
+        : file;
       assert.ok(existsSync(target), `${file}: missing ${value}`);
-      if (hash && target.endsWith('.html')) {
+      // Hashes on the portal shell are client routes resolved by portal.js, not
+      // element anchors; tests/portal.test.cjs covers that every route renders.
+      if (hash && target.endsWith('.html') && !target.endsWith('app.html')) {
         assert.ok(readFileSync(target, 'utf8').includes(`id="${hash}"`), `${file}: missing fragment ${value}`);
       }
     }
@@ -62,4 +68,25 @@ test('all first-party scripts parse', () => {
   for (const file of files.filter(file => file.endsWith('.js') && !file.includes('/vendor/'))) {
     assert.doesNotThrow(() => new vm.Script(readFileSync(file, 'utf8')), file);
   }
+});
+
+test('public information pages always return to the unified portal', () => {
+  const pages = ['about.html', 'principles.html', 'track-record.html', 'faq.html', 'disclosure.html', 'invite.html'];
+  for (const page of pages) {
+    const html = readFileSync(join(root, page), 'utf8');
+    assert.match(html, /class="portal-return" href="concepts\/market\.html">← Единый портал<\/a>/, page);
+  }
+});
+
+test('presentation and English pages expose the unified portal', () => {
+  const homepage = readFileSync(join(root, 'index.html'), 'utf8');
+  assert.match(homepage, /href="concepts\/market\.html">Единый портал<\/a>/);
+  assert.match(homepage, /http-equiv="refresh" content="0; url=concepts\/market\.html#market"/);
+  assert.match(readFileSync(join(root, 'en/index.html'), 'utf8'), /href="\.\.\/concepts\/market\.html">← Unified portal<\/a>/);
+});
+
+test('legacy information pages use the light shell while the presentation keeps its experience theme', () => {
+  const css = readFileSync(join(root, 'styles.css'), 'utf8');
+  assert.match(css, /body:not\(\.experience\)/);
+  assert.match(readFileSync(join(root, 'index.html'), 'utf8'), /<body class="experience">/);
 });
