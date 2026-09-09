@@ -1,0 +1,11 @@
+.git
+node_modules
+tmp
+data
+backups
+dist
+.env
+*.pdf
+*.zip
+mockups
+tests

@@ -3,6 +3,11 @@
   --line:#2c3236; --forest:#c1f900; --forest-deep:#a9dc00;
   --gold:#c1f900; --sky:#20281b; --danger:#ff9c88;
 }
+body:not(.experience) {
+  --bg:#f5f7fb; --paper:#ffffff; --ink:#111b2e; --muted:#657084;
+  --line:#dde3ec; --forest:#2959e5; --forest-deep:#183b9f;
+  --gold:#2959e5; --sky:#eaf0ff; --danger:#b43c31;
+}
 * {box-sizing:border-box;margin:0;padding:0}
 [hidden] {display:none!important}
 html {scroll-behavior:smooth;scroll-padding-top:110px}
@@ -16,6 +21,8 @@ button,a,input,select,textarea {touch-action:manipulation}
 .wrap {width:100%;max-width:1280px;margin-inline:auto;padding-inline:40px}
 header {position:sticky;top:0;z-index:20;background:rgba(248,244,236,.97);border-bottom:1px solid var(--line)}
 header .wrap {display:flex;align-items:center;min-height:94px;gap:26px}
+.portal-return {display:inline-flex;align-items:center;min-height:40px;padding:8px 11px;border:1px solid var(--line);border-radius:7px;color:var(--muted);font-size:12px;white-space:nowrap}
+.portal-return:hover {border-color:var(--forest);color:var(--forest)}
 .logo {flex-shrink:0;font-family:"Lora",Georgia,serif;font-size:26px;line-height:1.2;letter-spacing:-.04em;white-space:nowrap}
 .logo small {display:block;margin-top:7px;font-family:"Inter",sans-serif;font-size:11px;font-weight:400;letter-spacing:0;color:var(--muted)}
 header nav {display:flex;align-items:center;gap:18px;margin-inline:auto;font-size:13px}

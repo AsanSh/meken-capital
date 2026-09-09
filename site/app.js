@@ -108,7 +108,7 @@
         'Это запрос на разговор, не заявка на инвестирование.'
       ].join('\n');
       const emailLink = result.querySelector('[data-email-link]');
-      emailLink.href = `mailto:partner@meken.capital?subject=${encodeURIComponent('Запрос приглашения — Meken Capital')}&body=${encodeURIComponent(body)}`;
+      emailLink.href = `mailto:partner@meken.im?subject=${encodeURIComponent('Запрос приглашения — Meken Capital')}&body=${encodeURIComponent(body)}`;
       result.querySelector('textarea').value = body;
       result.hidden = false;
       message('Письмо подготовлено. Оно ещё не отправлено: откройте его в почте или скопируйте текст и отправьте вручную.');
@@ -120,10 +120,10 @@
     const text = result.querySelector('textarea');
     try {
       await navigator.clipboard.writeText(text.value);
-      message('Текст скопирован. Отправьте письмо на partner@meken.capital.');
+      message('Текст скопирован. Отправьте письмо на partner@meken.im.');
     } catch {
       text.focus(); text.select();
-      message('Текст выделен. Скопируйте его вручную и отправьте на partner@meken.capital.');
+      message('Текст выделен. Скопируйте его вручную и отправьте на partner@meken.im.');
     }
   });
 })();
