@@ -2,6 +2,26 @@
 
 Все значимые изменения Meken Capital фиксируются в этом файле.
 
+## [1.2.0] - 2026-09-09
+
+### Removed
+
+- Удалён статический прототип портала: `site/concepts/{market,club,flow}.html`, `platform.js`, `platform.css`, кабинет `investor.{html,js,css}`, админка `admin.{html,js,css}` с отдельным входом, клиентская анкета `interest.js`, отдельные страницы сайта (главная, управляющий, принципы, закрытые сделки, вопросы, приглашение, вход, правовые), `app.js`, `styles.css`, `legal.css`, `experience.*`, `demo-data.js` и каталог `site/assets/` — всего 39 файлов. Сервер их не отдавал: все прежние адреса редиректятся на оболочку `/app.html`, поэтому они расходились с живым приложением и вводили в заблуждение. История доступна в git до тега 1.1.1.
+- Удалены их тесты: `tests/platform-ui.cjs`, `tests/admin-ui.cjs`, `tests/investor-ui.cjs`, `tests/interest.test.mjs`, а из `tests/site.test.mjs` — проверки удалённых страниц. Скрипт `npm run test:legacy` убран: разделения на «живой» и «наследованный» наборы больше нет, все проверки в `npm test`. Пять падавших тестов, унаследованных из `codex/meken-im-release`, ушли вместе с разметкой, которую они проверяли.
+
+### Added
+
+- `tests/site.test.mjs` следит, чтобы в `site/` не появлялись файлы, которые сервер не отдаёт: список сверяется с `publicFiles` из `server.mjs`. Именно эта дыра позволила прототипу превратиться в мёртвый код незамеченным.
+
+### Changed
+
+- `npm test` — 20 тестов, все проходят. `scripts/build.mjs` кладёт `tests/site.test.mjs` в релизный пакет, поэтому `npm test` работает и внутри `dist/meken`.
+- `README.md`, `TZ.md` (разделы 4 и 5.2а), `docs/HANDOFF.md`, `docs/platform-proposal.md` и `design-qa.md` больше не описывают удалённые файлы как действующие.
+
+### Known limitations
+
+- Корневые `index.html` и `CNAME` не тронуты: они лежат вне `site/`, исключены из развёртывания через `.vercelignore` и могут обслуживаться GitHub Pages. Их судьбу нужно решать отдельно, зная настройки Pages.
+
 ## [1.1.1] - 2026-09-09
 
 ### Fixed

@@ -71,4 +71,4 @@ npm run build
 
 ## Продолжение
 
-См. docs/HANDOFF.md и docs/RELEASE-CHECKLIST.md. Старые site/concepts/platform.js, site/investor.js, site/admin.js остаются историческими исходниками, но сервер их не публикует. `npm run test:legacy` проверяет только старые прототипы.
+См. docs/HANDOFF.md и docs/RELEASE-CHECKLIST.md. Статический прототип (`site/concepts/*`, `site/investor.js`, `site/admin.js`, `site/interest.js` и отдельные страницы сайта) удалён: сервер их не отдавал, и они расходились с живым приложением. История доступна в git до тега 1.1.1. Единственная поверхность — оболочка `site/app.html` с `site/portal.js`; `npm test` проверяет её целиком, отдельного набора для прототипа больше нет.
