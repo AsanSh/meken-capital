@@ -28,7 +28,7 @@ final result: passed
 ## Comparison target and evidence
 
 - Source visual truth: `/Users/asans/Desktop/meken-capital/docs/design/selected-reference.png` (selected merged City with Proof design).
-- Implementation: `http://127.0.0.1:4173/index.html`.
+- Implementation: `http://127.0.0.1:4173/` (оболочка `site/app.html`; отдельной страницы `index.html` больше нет).
 - Source pixels: 1254×1254. Implementation CSS viewport and screenshot: 1254×1254, effective screenshot density 1. No density normalization required.
 - State: Russian, dark theme, city phase 50%, September demo selected, dialog closed, top of page, entrance finished.
 - First implementation: `docs/design/screenshots/desktop-v1.png`.

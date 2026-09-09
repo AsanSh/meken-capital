@@ -12,7 +12,7 @@ mkdirSync('dist/public',{recursive:true});
 for(const p of ['server.mjs','package.json','package-lock.json','Dockerfile','compose.yaml','Caddyfile','.env.example','.dockerignore','.gitignore','README.md'])cpSync(p,'dist/meken/'+p);
 for(const d of ['scripts','docs','lib'])if(!process.env.VERCEL || d!=='docs')cpSync(d,'dist/meken/'+d,{recursive:true});
 mkdirSync('dist/meken/tests',{recursive:true});
-for(const p of ['rates.test.mjs','server.test.mjs','portal.test.cjs','platform-model.test.mjs'])cpSync('tests/'+p,'dist/meken/tests/'+p);
+for(const p of ['rates.test.mjs','server.test.mjs','portal.test.cjs','platform-model.test.mjs','site.test.mjs'])cpSync('tests/'+p,'dist/meken/tests/'+p);
 mkdirSync('dist/meken/site/concepts/assets',{recursive:true});
 for(const p of ['app.html','portal.js','portal.css','brand-flag.png','favicon.svg','robots.txt','sitemap.xml','concepts/model.js','concepts/assets/house.webp','concepts/assets/apartment.webp','concepts/assets/materials.webp'])cpSync('site/'+p,'dist/meken/site/'+p);
 writeFileSync('dist/meken/BUILD.json',JSON.stringify({built:new Date().toISOString(),version:JSON.parse(readFileSync('package.json')).version,domain:'meken.im',runtime:'Node.js 24.12+',entry:'npm start'},null,2));
