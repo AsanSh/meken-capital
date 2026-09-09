@@ -7,5 +7,4 @@ dist
 .env
 *.pdf
 *.zip
-mockups
 tests
