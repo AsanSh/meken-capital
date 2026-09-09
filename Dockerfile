@@ -1,6 +1,11 @@
 FROM node:24.12.0-alpine
 WORKDIR /app
-COPY --chown=node:node server.mjs package.json ./
+# Dependencies first: a source change must not reinstall them.
+COPY --chown=node:node package.json package-lock.json ./
+# pg is a runtime dependency for the PostgreSQL path. Without it the image only
+# works on the built-in node:sqlite and crashes on start when DATABASE_URL is set.
+RUN npm ci --omit=dev && npm cache clean --force && chown -R node:node /app/node_modules
+COPY --chown=node:node server.mjs ./
 COPY --chown=node:node site ./site
 COPY --chown=node:node scripts ./scripts
 COPY --chown=node:node lib ./lib
