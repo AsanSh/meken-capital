@@ -14,8 +14,6 @@ docs
 .agents
 .openai
 .claude
-mockups
-index.html
 TZ.md
 legal-architecture.md
 design-qa.md
