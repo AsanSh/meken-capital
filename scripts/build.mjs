@@ -10,7 +10,7 @@ if(process.env.VERCEL){
 mkdirSync('dist/meken',{recursive:true});
 mkdirSync('dist/public',{recursive:true});
 for(const p of ['server.mjs','package.json','package-lock.json','Dockerfile','compose.yaml','Caddyfile','.env.example','.dockerignore','.gitignore','README.md'])cpSync(p,'dist/meken/'+p);
-for(const d of ['scripts','docs','lib'])if(!process.env.VERCEL || d!=='docs')cpSync(d,'dist/meken/'+d,{recursive:true});
+for(const d of ['scripts','docs','lib'])if(!process.env.VERCEL || d!=='docs')cpSync(d,'dist/meken/'+d,{recursive:true,filter:src=>!src.endsWith('.pdf')});
 mkdirSync('dist/meken/tests',{recursive:true});
 for(const p of ['rates.test.mjs','server.test.mjs','portal.test.cjs','platform-model.test.mjs','site.test.mjs'])cpSync('tests/'+p,'dist/meken/tests/'+p);
 mkdirSync('dist/meken/site/concepts/assets',{recursive:true});

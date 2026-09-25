@@ -1,6 +1,7 @@
 import http from 'node:http';
 import { openDatabase } from './lib/database.mjs';
-import { randomBytes, scryptSync, timingSafeEqual, createHash } from 'node:crypto';
+import { randomBytes, scrypt, timingSafeEqual, createHash } from 'node:crypto';
+import { promisify } from 'node:util';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -44,8 +45,12 @@ const getRates = createRateService({
 });
 const id = () => randomBytes(16).toString('hex');
 const hash = v => createHash('sha256').update(v).digest('hex');
-const passwordHash = p => { const salt = id(); return salt + ':' + scryptSync(p, salt, 64).toString('hex'); };
-const verify = (p, stored) => { const [salt, value] = stored.split(':'); return timingSafeEqual(Buffer.from(value, 'hex'), scryptSync(p, salt, 64)); };
+// Async scrypt keeps the event loop free for other requests while a password is hashed.
+const scryptAsync = promisify(scrypt);
+const passwordHash = async p => { const salt = id(); return salt + ':' + (await scryptAsync(p, salt, 64)).toString('hex'); };
+const verify = async (p, stored) => { const [salt, value] = stored.split(':'); return timingSafeEqual(Buffer.from(value, 'hex'), await scryptAsync(p, salt, 64)); };
+// A login for an unknown email still pays for one scrypt, so response time does not reveal registered emails.
+const decoyHash = await passwordHash(randomBytes(16).toString('hex'));
 const audit = async (u, action, target) => (await db.prepare('INSERT INTO audit(actor,action,target,created) VALUES(?,?,?,?)').run(u.id, action, target, now()));
 const notify = async (user, message) => (await db.prepare('INSERT INTO notifications VALUES(?,?,?,0,?)').run(id(), user, message, now()));
 const fail = (status, message) => { throw Object.assign(new Error(message), { status }); };
@@ -57,7 +62,16 @@ const adminEmail = process.env.ADMIN_EMAIL;
 if (production && process.env.ADMIN_PASSWORD === 'REPLACE_WITH_A_UNIQUE_RANDOM_PASSWORD') throw new Error('Replace the example administrator password before starting');
 if (adminEmail && !(await db.prepare('SELECT id FROM users WHERE email=?').get(adminEmail.toLowerCase()))) {
   checkPassword(process.env.ADMIN_PASSWORD);
-  (await db.prepare('INSERT INTO users VALUES(?,?,?,?,?,?) ON CONFLICT(email) DO NOTHING').run(id(), emailOf(adminEmail), 'Администратор', passwordHash(process.env.ADMIN_PASSWORD), 'admin', now()));
+  (await db.prepare('INSERT INTO users VALUES(?,?,?,?,?,?) ON CONFLICT(email) DO NOTHING').run(id(), emailOf(adminEmail), 'Администратор', await passwordHash(process.env.ADMIN_PASSWORD), 'admin', now()));
+}
+// Behind Caddy every request arrives from the proxy container, so the socket address
+// would put all visitors into one rate-limit bucket. With TRUST_PROXY=1 the rightmost
+// X-Forwarded-For entry (the one written by our own proxy) identifies the client.
+const trustProxy = process.env.TRUST_PROXY === '1';
+function clientIp(req) {
+  if (process.env.VERCEL && req.headers['x-vercel-forwarded-for']) return String(req.headers['x-vercel-forwarded-for']).split(',')[0].trim();
+  if (trustProxy && req.headers['x-forwarded-for']) return String(req.headers['x-forwarded-for']).split(',').pop().trim();
+  return req.socket.remoteAddress;
 }
 const limits = new Map();
 async function throttle(key, max) {
@@ -107,20 +121,21 @@ async function api(req,res,url) {
   if (p==='/api/health') return json(res,{ok:true});
   if (p==='/api/me' && method==='GET') return json(res,{user:u});
   if (p==='/api/login' && method==='POST') {
-    const b=await body(req), email=emailOf(b.email); await throttle('login-ip:'+(process.env.VERCEL ? req.headers['x-vercel-forwarded-for'] || req.socket.remoteAddress : req.socket.remoteAddress),60); await throttle('login:'+email,10);
+    const b=await body(req), email=emailOf(b.email); await throttle('login-ip:'+clientIp(req),60); await throttle('login:'+email,10);
     if (typeof b.password!=='string'||b.password.length>128) fail(400,'Проверьте пароль');
     const user=(await db.prepare('SELECT * FROM users WHERE email=?').get(email));
-    if (!user || !verify(b.password,user.password)) fail(401,'Неверный email или пароль');
+    const valid=await verify(b.password,user?.password||decoyHash);
+    if (!user || !valid) fail(401,'Неверный email или пароль');
     const token=randomBytes(32).toString('hex'); (await db.prepare('DELETE FROM sessions WHERE expires<?').run(Date.now()));
     (await db.prepare('INSERT INTO sessions VALUES(?,?,?)').run(hash(token),user.id,Date.now()+86400000));
     res.setHeader('Set-Cookie',`meken_session=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=86400${production?'; Secure':''}`);
     await audit(user,'login',user.id); return json(res,{ok:true});
   }
   if (p==='/api/register' && method==='POST') {
-    await throttle('register:'+(process.env.VERCEL ? req.headers['x-vercel-forwarded-for'] || req.socket.remoteAddress : req.socket.remoteAddress),10); const b=await body(req), email=emailOf(b.email); checkPassword(b.password);
+    await throttle('register:'+clientIp(req),10); const b=await body(req), email=emailOf(b.email); checkPassword(b.password);
     const name=text(b.name,120); if (!name || b.consent!==true) fail(400,'Укажите имя и подтвердите согласие');
     if((await db.prepare('SELECT id FROM users WHERE email=?').get(email))) fail(409,'Этот email уже зарегистрирован');
-    const uid=id(); (await db.prepare('INSERT INTO users VALUES(?,?,?,?,?,?)').run(uid,email,name,passwordHash(b.password),'investor',now()));
+    const uid=id(); (await db.prepare('INSERT INTO users VALUES(?,?,?,?,?,?)').run(uid,email,name,await passwordHash(b.password),'investor',now()));
     await audit({id:uid},'register-consent-v1',uid); return json(res,{ok:true},201);
   }
   if (p==='/api/logout' && method==='POST') {
@@ -131,8 +146,8 @@ async function api(req,res,url) {
   if (p==='/api/password' && method==='POST') {
     requireUser(u); await throttle('password:'+u.id,10); const b=await body(req); checkPassword(b.password);
     const record=(await db.prepare('SELECT password FROM users WHERE id=?').get(u.id));
-    if(typeof b.current!=='string'||b.current.length>128||!verify(b.current,record.password)) fail(400,'Текущий пароль неверен');
-    (await db.prepare('UPDATE users SET password=? WHERE id=?').run(passwordHash(b.password),u.id));(await db.prepare('DELETE FROM sessions WHERE user_id=?').run(u.id));await audit(u,'password-change',u.id);return json(res,{ok:true});
+    if(typeof b.current!=='string'||b.current.length>128||!(await verify(b.current,record.password))) fail(400,'Текущий пароль неверен');
+    (await db.prepare('UPDATE users SET password=? WHERE id=?').run(await passwordHash(b.password),u.id));(await db.prepare('DELETE FROM sessions WHERE user_id=?').run(u.id));await audit(u,'password-change',u.id);return json(res,{ok:true});
   }
   if (p==='/api/deals' && method==='GET') return json(res,{deals:(await db.prepare('SELECT * FROM deals WHERE published=1').all()).map(dealOf)});
   if (p==='/api/applications' && method==='GET') {
@@ -170,7 +185,7 @@ async function api(req,res,url) {
   if(p==='/api/settings'&&method==='GET')return json(res,await getRates());
   if(p.startsWith('/api/admin/')) {
     requireAdmin(u);
-    if(p==='/api/admin/overview'&&method==='GET')return json(res,{deals:(await db.prepare('SELECT * FROM deals').all()).map(dealOf),applications:(await db.prepare('SELECT a.*,u.name,u.email FROM applications a JOIN users u ON u.id=a.user_id ORDER BY a.created DESC').all()),users:(await db.prepare('SELECT id,name,email,role,created FROM users').all()),audit:(await db.prepare('SELECT * FROM audit ORDER BY id DESC LIMIT 100').all()),polls:(await db.prepare('SELECT p.*, (SELECT count(*) FROM votes v WHERE v.poll_id=p.id) AS votes FROM polls p').all())});
+    if(p==='/api/admin/overview'&&method==='GET')return json(res,{deals:(await db.prepare('SELECT * FROM deals').all()).map(dealOf),applications:(await db.prepare('SELECT a.*,u.name,u.email FROM applications a JOIN users u ON u.id=a.user_id ORDER BY a.created DESC').all()),users:(await db.prepare('SELECT id,name,email,role,created FROM users').all()),audit:(await db.prepare('SELECT * FROM audit ORDER BY id DESC LIMIT 100').all()),polls:(await db.prepare("SELECT p.*, count(v.answer) AS votes, count(CASE WHEN v.answer='yes' THEN 1 END) AS yes, count(CASE WHEN v.answer='no' THEN 1 END) AS no, count(CASE WHEN v.answer='abstain' THEN 1 END) AS abstain FROM polls p LEFT JOIN votes v ON v.poll_id=p.id GROUP BY p.id,p.deal_id,p.question,p.closes ORDER BY p.closes DESC").all()).map(p=>({...p,votes:Number(p.votes),yes:Number(p.yes),no:Number(p.no),abstain:Number(p.abstain)}))});
     if(p==='/api/admin/deals'&&method==='POST') {
       const b=await body(req), d=validateDeal(b);const did=b.id||id(),existing=(await db.prepare('SELECT * FROM deals WHERE id=?').get(did));
       if(existing&&b.version!==existing.version)fail(409,'Проект изменён другим администратором. Обновите страницу.');

@@ -54,6 +54,7 @@ test('server: persistent accounts, publication gates, private documents, decisio
  assert.equal((await req('vote','POST',{pollId:poll.id,answer:'yes'},other)).status,403);
  assert.equal((await req('vote','POST',{pollId:poll.id,answer:'yes'},investor)).status,200);
  assert.equal((await req('vote','POST',{pollId:poll.id,answer:'no'},investor)).status,409);
+ const tally=(await req('admin/overview','GET',undefined,admin)).data.polls[0];assert.deepEqual([tally.votes,tally.yes,tally.no,tally.abstain],[1,1,0,0]);
  assert.ok((await req('notifications','GET',undefined,investor)).data.notifications.length>=2);
  await stop();await start();assert.equal((await req('applications','GET',undefined,investor)).data.applications[0].status,'approved');assert.equal((await req('polls','GET',undefined,investor)).data.polls[0].answer,'yes');
  const version=(await req('admin/overview','GET',undefined,admin)).data.deals[0].version;
@@ -64,4 +65,16 @@ test('server: persistent accounts, publication gates, private documents, decisio
  await req('logout','POST',{},admin);assert.equal((await req('admin/overview','GET',undefined,admin)).status,401);
  const parallel=await Promise.all(Array.from({length:4},(_,i)=>req('login','POST',{email:'missing-'+i+'@example.com',password:'Wrong-password-42'})));
  assert.deepEqual(parallel.map(r=>r.status),[401,401,401,401]);
+});
+
+test('server: behind a trusted proxy each client has its own rate-limit bucket',async t=>{
+ const probe=net.createServer().listen(0,'127.0.0.1');await once(probe,'listening');const port=probe.address().port;await new Promise(r=>probe.close(r));
+ const origin=`http://127.0.0.1:${port}`,dir=mkdtempSync(join(tmpdir(),'meken-proxy-'));
+ const proc=spawn(process.execPath,['server.mjs'],{env:{...process.env,NODE_ENV:'test',APP_ORIGIN:origin,PORT:String(port),HOST:'127.0.0.1',DATA_DIR:dir,TRUST_PROXY:'1',ADMIN_EMAIL:''},stdio:['ignore','pipe','pipe']});
+ t.after(async()=>{if(proc.exitCode===null){const exited=once(proc,'exit');proc.kill('SIGTERM');await exited;}rmSync(dir,{recursive:true,force:true});});
+ await new Promise((resolve,reject)=>{proc.stdout.on('data',x=>{if(x.toString().includes('Meken ready'))resolve();});proc.on('exit',code=>reject(new Error('Server stopped: '+code)));});
+ const register=(i,ip)=>fetch(origin+'/api/register',{method:'POST',headers:{Origin:origin,'X-Meken-Request':'1','Content-Type':'application/json','X-Forwarded-For':'203.0.113.99, '+ip},body:JSON.stringify({name:'Investor '+i,email:`proxy-${i}@example.com`,password:'Investor-test-secret-42',consent:true})}).then(r=>r.status);
+ const first=[];for(let i=0;i<11;i++)first.push(await register(i,'198.51.100.1'));
+ assert.deepEqual(first,[...Array(10).fill(201),429]);
+ assert.equal(await register(11,'198.51.100.2'),201,'another client behind the same proxy is not blocked');
 });

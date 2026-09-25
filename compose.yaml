@@ -8,6 +8,8 @@ services:
       APP_ORIGIN: https://meken.im
       HOST: 0.0.0.0
       DATA_DIR: /app/data
+      # Caddy is the only way in; trust the X-Forwarded-For it writes for per-client rate limits.
+      TRUST_PROXY: '1'
     volumes:
       - meken-data:/app/data
       - meken-backups:/app/backups
