@@ -5,6 +5,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRateService } from './lib/rates.mjs';
+import townhouses from './site/townhouses.js';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const production = process.env.NODE_ENV === 'production';
@@ -24,8 +25,20 @@ CREATE TABLE IF NOT EXISTS votes (poll_id TEXT NOT NULL REFERENCES polls(id), us
 CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS audit (id INTEGER PRIMARY KEY, actor TEXT NOT NULL, action TEXT NOT NULL, target TEXT NOT NULL, created TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS rate_limits (key TEXT PRIMARY KEY, count INTEGER NOT NULL, expires BIGINT NOT NULL);
+CREATE TABLE IF NOT EXISTS investor_profiles (user_id TEXT PRIMARY KEY REFERENCES users(id), payload TEXT NOT NULL, updated TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS project_interest_workflow (user_id TEXT NOT NULL REFERENCES users(id), project_id TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'new', message TEXT NOT NULL DEFAULT '', note TEXT NOT NULL DEFAULT '', follow_up TEXT NOT NULL DEFAULT '', PRIMARY KEY(user_id,project_id));
+CREATE TABLE IF NOT EXISTS project_interests (user_id TEXT NOT NULL REFERENCES users(id), project_id TEXT NOT NULL, variant TEXT NOT NULL, funding TEXT NOT NULL, amount BIGINT NOT NULL, ready_days INTEGER NOT NULL, version TEXT NOT NULL, updated TEXT NOT NULL, PRIMARY KEY(user_id,project_id));
+CREATE TABLE IF NOT EXISTS investor_interests (id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), deal_id TEXT, amount BIGINT NOT NULL, horizon TEXT NOT NULL, ready_days INTEGER NOT NULL, status TEXT NOT NULL DEFAULT 'new', created TEXT NOT NULL, updated TEXT NOT NULL, UNIQUE(user_id,deal_id,horizon));
 `});
 const now = () => new Date().toISOString();
+function investmentProfile(b){
+ if(!b||!['USD','KGS'].includes(b.currency)||![7,14,30].includes(b.readyDays)||typeof b.poolConsent!=='boolean')fail(400,'Укажите валюту, срок готовности и согласие на подбор');
+ for(const k of ['short','medium','long'])if(!Number.isSafeInteger(b[k])||b[k]<0||b[k]>1e11)fail(400,'Суммы должны быть целыми числами от 0 до 100 000 000 000');
+ const whatsapp=String(b.whatsapp||'').trim();if(whatsapp&&!/^\+[1-9]\d{7,14}$/.test(whatsapp))fail(400,'WhatsApp: укажите международный номер, например +996700123456');
+ if(!Array.isArray(b.areas)||b.areas.some(x=>!['materials','construction','property','rent'].includes(x)))fail(400,'Выберите направления из списка');
+ if(b.poolConsent&&!['short','medium','long'].some(k=>b[k]>0))fail(400,'Для включения в пул укажите сумму хотя бы для одного срока');
+ return {currency:b.currency,short:b.short,medium:b.medium,long:b.long,readyDays:b.readyDays,areas:[...new Set(b.areas)],whatsapp,poolConsent:b.poolConsent};
+}
 const getRates = createRateService({
   read: async () => JSON.parse((await db.prepare("SELECT value FROM settings WHERE key='nbkr'").get())?.value || 'null'),
   write: async value => (await db.prepare("INSERT INTO settings VALUES('nbkr',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(JSON.stringify(value)))
@@ -94,6 +107,33 @@ async function api(req,res,url) {
   }
   if (p==='/api/health') return json(res,{ok:true});
   if (p==='/api/me' && method==='GET') return json(res,{user:u});
+  if(p==='/api/project-interests'&&method==='GET'){requireUser(u);return json(res,{interests:(await db.prepare("SELECT i.*,COALESCE(w.status,'new') AS status,COALESCE(w.message,'') AS message FROM project_interests i LEFT JOIN project_interest_workflow w ON w.user_id=i.user_id AND w.project_id=i.project_id WHERE i.user_id=? ORDER BY i.updated DESC").all(u.id)).map(i=>({...i,amount:Number(i.amount)}))});}
+  if(p==='/api/project-interests/withdraw'&&method==='POST'){
+   requireUser(u);const b=await body(req);const r=await db.prepare('SELECT * FROM project_interests WHERE user_id=? AND project_id=?').get(u.id,b.projectId);if(!r)fail(404,'Заявка не найдена');
+   await db.prepare("INSERT INTO project_interest_workflow(user_id,project_id,status) VALUES(?,?,'withdrawn') ON CONFLICT(user_id,project_id) DO UPDATE SET status='withdrawn',message=''").run(u.id,b.projectId);
+   await db.prepare('UPDATE project_interests SET updated=? WHERE user_id=? AND project_id=?').run(now(),u.id,b.projectId);await audit(u,'project-interest-withdraw',b.projectId);return json(res,{ok:true});
+  }
+  if(p==='/api/admin/project-interest'&&method==='POST'){
+   requireAdmin(u);const b=await body(req);if(!['new','discussion','review','agreed','declined'].includes(b.status))fail(400,'Выберите этап обработки');
+   const r=await db.prepare('SELECT i.*,w.status FROM project_interests i LEFT JOIN project_interest_workflow w ON w.user_id=i.user_id AND w.project_id=i.project_id WHERE i.user_id=? AND i.project_id=?').get(b.userId,b.projectId);if(!r)fail(404,'Заявка не найдена');if(r.status==='withdrawn')fail(409,'Инвестор отозвал заявку');
+   const message=text(b.message||'',1000),note=text(b.note||'',2000),followUp=text(b.followUp||'',10);if(followUp&&(!/^\d{4}-\d{2}-\d{2}$/.test(followUp)||Number.isNaN(Date.parse(followUp))||new Date(followUp).toISOString().slice(0,10)!==followUp))fail(400,'Укажите корректную дату контакта');
+   if(b.status==='agreed'&&!message)fail(400,'Опишите согласованные условия в сообщении инвестору');
+   const changed=await db.prepare('UPDATE project_interests SET updated=? WHERE user_id=? AND project_id=? AND updated=?').run(now(),b.userId,b.projectId,b.expectedUpdated);if(!changed.changes)fail(409,'Заявка изменилась. Обновите страницу перед сохранением');
+   await db.prepare('INSERT INTO project_interest_workflow(user_id,project_id,status,message,note,follow_up) VALUES(?,?,?,?,?,?) ON CONFLICT(user_id,project_id) DO UPDATE SET status=excluded.status,message=excluded.message,note=excluded.note,follow_up=excluded.follow_up').run(b.userId,b.projectId,b.status,message,note,followUp);
+   await db.prepare('INSERT INTO notifications(id,user_id,message,created) VALUES(?,?,?,?)').run(id(),b.userId,'Обновлена заявка: '+(townhouses.projects.find(p=>p.id===b.projectId)?.name||b.projectId)+(message?' — '+message:''),now());await audit(u,'project-interest-'+b.status,b.projectId);return json(res,{ok:true});
+  }
+  if(p==='/api/project-interests'&&method==='POST'){
+    requireUser(u);const b=await body(req),project=townhouses.projects.find(x=>x.id===b.projectId);
+    if(!project||!Object.hasOwn(project.variants,b.variant)||b.funding!=='construction')fail(400,'Выберите проект, формат и источник земли');
+    if(b.version!==townhouses.version)fail(409,'Расчёт проекта обновился. Обновите страницу.');
+    if(b.consent!==true||![7,14,30].includes(b.readyDays))fail(400,'Подтвердите согласие и срок готовности');
+    const amount=number(b.amount,1,townhouses.calculate(b.projectId,b.variant,b.funding).investorCapital);if(!Number.isSafeInteger(amount))fail(400,'Укажите целую сумму в USD');
+    await throttle('project-interest:'+u.id,30);
+    await db.prepare('INSERT INTO project_interests(user_id,project_id,variant,funding,amount,ready_days,version,updated) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(user_id,project_id) DO UPDATE SET variant=excluded.variant,funding=excluded.funding,amount=excluded.amount,ready_days=excluded.ready_days,version=excluded.version,updated=excluded.updated').run(u.id,b.projectId,b.variant,b.funding,amount,b.readyDays,b.version,now());
+    await db.prepare("INSERT INTO project_interest_workflow(user_id,project_id,status) VALUES(?,?,'new') ON CONFLICT(user_id,project_id) DO UPDATE SET status='new',message=''").run(u.id,b.projectId);
+    await audit(u,'townhouse-interest-usd',b.projectId);return json(res,{ok:true,currency:'USD'},201);
+  }
+  if(p==='/api/admin/project-interests'&&method==='GET'){requireAdmin(u);return json(res,{interests:await db.prepare("SELECT i.*,u.name,u.email,COALESCE(w.status,'new') AS status,COALESCE(w.message,'') AS message,COALESCE(w.note,'') AS note,COALESCE(w.follow_up,'') AS follow_up FROM project_interests i JOIN users u ON u.id=i.user_id LEFT JOIN project_interest_workflow w ON w.user_id=i.user_id AND w.project_id=i.project_id ORDER BY i.updated DESC").all()});}
   if (p==='/api/login' && method==='POST') {
     const b=await body(req), email=emailOf(b.email); await throttle('login-ip:'+(process.env.VERCEL ? req.headers['x-vercel-forwarded-for'] || req.socket.remoteAddress : req.socket.remoteAddress),60); await throttle('login:'+email,10);
     if (typeof b.password!=='string'||b.password.length>128) fail(400,'Проверьте пароль');
@@ -109,6 +149,7 @@ async function api(req,res,url) {
     const name=text(b.name,120); if (!name || b.consent!==true) fail(400,'Укажите имя и подтвердите согласие');
     if((await db.prepare('SELECT id FROM users WHERE email=?').get(email))) fail(409,'Этот email уже зарегистрирован');
     const uid=id(); (await db.prepare('INSERT INTO users VALUES(?,?,?,?,?,?)').run(uid,email,name,passwordHash(b.password),'investor',now()));
+    if(b.profile){const profile=investmentProfile(b.profile);await db.prepare('INSERT INTO investor_profiles(user_id,payload,updated) VALUES(?,?,?)').run(uid,JSON.stringify(profile),now());}
     await audit({id:uid},'register-consent-v1',uid); return json(res,{ok:true},201);
   }
   if (p==='/api/logout' && method==='POST') {
@@ -132,6 +173,10 @@ async function api(req,res,url) {
     if((await db.prepare('SELECT id FROM applications WHERE user_id=? AND deal_id=?').get(u.id,d.id)))fail(409,'Вы уже направили заявку на этот проект');
     const aid=id();(await db.prepare('INSERT INTO applications VALUES(?,?,?,?,?,?)').run(aid,u.id,d.id,amount,'submitted',now()));await audit(u,'application-consent-v1',aid);await notify(u.id,'Заявка на «'+d.title+'» получена. Это заявка на обсуждение, денежные средства не списаны.');return json(res,{ok:true},201);
   }
+  if (p==='/api/profile' && method==='GET') { requireUser(u); const r=await db.prepare('SELECT payload,updated FROM investor_profiles WHERE user_id=?').get(u.id); return json(res,{profile:r?JSON.parse(r.payload):null,updated:r?.updated||null}); }
+  if (p==='/api/profile' && method==='POST') { requireUser(u); const b=await body(req); const profile=investmentProfile(b); const updated=now(); await db.prepare('INSERT INTO investor_profiles(user_id,payload,updated) VALUES(?,?,?) ON CONFLICT(user_id) DO UPDATE SET payload=excluded.payload,updated=excluded.updated').run(u.id,JSON.stringify(profile),updated); await audit(u,'investor-profile-save',u.id); return json(res,{ok:true,profile,updated}); }
+  if (p==='/api/interests' && method==='GET') { requireUser(u); return json(res,{interests:await db.prepare('SELECT * FROM investor_interests WHERE user_id=? ORDER BY created DESC').all(u.id)}); }
+  if (p==='/api/interests' && method==='POST') { requireUser(u); const b=await body(req); const amount=Math.trunc(number(Number(b.amount),1,1e12)); const horizon=['short','medium','long'].includes(b.horizon)?b.horizon:fail(400,'Выберите горизонт'); const readyDays=[7,14,30].includes(Number(b.readyDays))?Number(b.readyDays):fail(400,'Выберите срок подготовки средств'); const dealId=b.dealId?text(b.dealId,120):null; const created=now(), iid=id(); await db.prepare('INSERT INTO investor_interests(id,user_id,deal_id,amount,horizon,ready_days,status,created,updated) VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(user_id,deal_id,horizon) DO UPDATE SET amount=excluded.amount,ready_days=excluded.ready_days,updated=excluded.updated,status=\'new\'').run(iid,u.id,dealId,amount,horizon,readyDays,'new',created,created); await audit(u,'investor-interest',dealId||u.id); return json(res,{ok:true},201); }
   if (p==='/api/notifications' && method==='GET') { requireUser(u);return json(res,{notifications:(await db.prepare('SELECT * FROM notifications WHERE user_id=? ORDER BY created DESC LIMIT 100').all(u.id))}); }
   if (p==='/api/notifications/read' && method==='POST') { requireUser(u);(await db.prepare('UPDATE notifications SET is_read=1 WHERE user_id=?').run(u.id));return json(res,{ok:true}); }
   if (p==='/api/documents' && method==='GET') {
@@ -157,7 +202,7 @@ async function api(req,res,url) {
   if(p==='/api/settings'&&method==='GET')return json(res,await getRates());
   if(p.startsWith('/api/admin/')) {
     requireAdmin(u);
-    if(p==='/api/admin/overview'&&method==='GET')return json(res,{deals:(await db.prepare('SELECT * FROM deals').all()).map(dealOf),applications:(await db.prepare('SELECT a.*,u.name,u.email FROM applications a JOIN users u ON u.id=a.user_id ORDER BY a.created DESC').all()),users:(await db.prepare('SELECT id,name,email,role,created FROM users').all()),audit:(await db.prepare('SELECT * FROM audit ORDER BY id DESC LIMIT 100').all()),polls:(await db.prepare('SELECT p.*, (SELECT count(*) FROM votes v WHERE v.poll_id=p.id) AS votes FROM polls p').all())});
+    if(p==='/api/admin/overview'&&method==='GET')return json(res,{deals:(await db.prepare('SELECT * FROM deals').all()).map(dealOf),applications:(await db.prepare('SELECT a.*,u.name,u.email FROM applications a JOIN users u ON u.id=a.user_id ORDER BY a.created DESC').all()),users:(await db.prepare('SELECT id,name,email,role,created FROM users').all()),profiles:(await db.prepare('SELECT p.*,u.name,u.email FROM investor_profiles p JOIN users u ON u.id=p.user_id ORDER BY p.updated DESC').all()).map(x=>({...x,payload:JSON.parse(x.payload)})),interests:await db.prepare('SELECT i.*,u.name,u.email FROM investor_interests i JOIN users u ON u.id=i.user_id ORDER BY i.updated DESC').all(),audit:(await db.prepare('SELECT * FROM audit ORDER BY id DESC LIMIT 100').all()),polls:(await db.prepare('SELECT p.*, (SELECT count(*) FROM votes v WHERE v.poll_id=p.id) AS votes FROM polls p').all())});
     if(p==='/api/admin/deals'&&method==='POST') {
       const b=await body(req), d=validateDeal(b);const did=b.id||id(),existing=(await db.prepare('SELECT * FROM deals WHERE id=?').get(did));
       if(existing&&b.version!==existing.version)fail(409,'Проект изменён другим администратором. Обновите страницу.');
@@ -193,7 +238,7 @@ async function api(req,res,url) {
   fail(404,'Запрос не найден');
 }
 const redirects={'/index.html':'/','/concepts/market.html':'/','/concepts/club.html':'/#club','/concepts/flow.html':'/#flow','/faq.html':'/#faq','/about.html':'/#about','/principles.html':'/#faq','/disclosure.html':'/#legal','/user-agreement.html':'/#terms','/privacy-policy.html':'/#privacy','/invite.html':'/#register','/login.html':'/#login','/investor.html':'/#account','/admin.html':'/#admin','/admin-login.html':'/#admin-login','/track-record.html':'/#market','/en/index.html':'/'};
-const publicFiles=new Set(['/app.html','/portal.css','/portal.js','/concepts/model.js','/favicon.svg','/brand-flag.png','/robots.txt','/sitemap.xml']);
+const publicFiles=new Set(['/app.html','/investor-workflow.js','/townhouses.js','/townhouse-view.js','/portal.css','/portal.js','/concepts/model.js','/favicon.svg','/brand-flag.png','/robots.txt','/sitemap.xml']);
 export async function handler(req,res){
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','same-origin');res.setHeader('X-Frame-Options','DENY');
   res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'");
@@ -210,7 +255,7 @@ export async function handler(req,res){
     if(!['GET','HEAD'].includes(req.method))fail(405,'Метод не поддерживается');
     if(redirects[url.pathname]){res.writeHead(302,{Location:redirects[url.pathname]});return res.end();}
     const p=url.pathname==='/'?'/app.html':url.pathname;
-    if(!publicFiles.has(p)&&!/^\/concepts\/assets\/(materials|house|apartment)\.webp$/.test(p))fail(404,'Страница не найдена');
+    if(!publicFiles.has(p)&&!/^\/concepts\/assets\/(materials|house|apartment|besh-kungey|oskon-ordo)\.webp$/.test(p))fail(404,'Страница не найдена');
     const file=resolve(root,'site','.'+p);if(!existsSync(file))fail(404,'Страница не найдена');
     res.setHeader('Content-Type',({'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.svg':'image/svg+xml','.webp':'image/webp','.png':'image/png','.xml':'application/xml','.txt':'text/plain'})[extname(file)]||'application/octet-stream');
     res.setHeader('Cache-Control','no-cache');return res.end(req.method==='HEAD'?undefined:readFileSync(file));
