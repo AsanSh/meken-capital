@@ -51,6 +51,7 @@ test('server: persistent accounts, publication gates, private documents, decisio
  assert.equal((await req('applications','GET',undefined,other)).data.applications.length,0);
  assert.equal((await req('admin/polls','POST',{dealId:did,question:'Approve report?',closes:new Date(Date.now()+86400000).toISOString()},admin)).status,200);
  const poll=(await req('polls','GET',undefined,investor)).data.polls[0];assert.ok(poll);
+ assert.deepEqual((({votes,yes,no,abstain})=>[votes,yes,no,abstain])((await req('admin/overview','GET',undefined,admin)).data.polls[0]),[0,0,0,0]);
  assert.equal((await req('vote','POST',{pollId:poll.id,answer:'yes'},other)).status,403);
  assert.equal((await req('vote','POST',{pollId:poll.id,answer:'yes'},investor)).status,200);
  assert.equal((await req('vote','POST',{pollId:poll.id,answer:'no'},investor)).status,409);
